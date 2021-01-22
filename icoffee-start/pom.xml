@@ -7,22 +7,22 @@
         <version>0.0.1-SNAPSHOT</version>
     </parent>
 
-    <artifactId>icoffee-system</artifactId>
-    <name>icoffee-system</name>
+    <artifactId>icoffee-start</artifactId>
+    <name>icoffee-start</name>
 
     <properties>
-
+        <java.version>1.8</java.version>
     </properties>
 
     <dependencies>
         <dependency>
-            <groupId>com.github.whvcse</groupId>
-            <artifactId>easy-captcha</artifactId>
-            <version>1.6.2</version>
+            <groupId>com.icoffee</groupId>
+            <artifactId>icoffee-common</artifactId>
+            <version>0.0.1-SNAPSHOT</version>
         </dependency>
         <dependency>
             <groupId>com.icoffee</groupId>
-            <artifactId>icoffee-common</artifactId>
+            <artifactId>icoffee-system</artifactId>
             <version>0.0.1-SNAPSHOT</version>
         </dependency>
     </dependencies>
@@ -32,14 +32,6 @@
             <plugin>
                 <groupId>org.springframework.boot</groupId>
                 <artifactId>spring-boot-maven-plugin</artifactId>
-            </plugin>
-            <!-- 跳过单元测试 -->
-            <plugin>
-                <groupId>org.apache.maven.plugins</groupId>
-                <artifactId>maven-surefire-plugin</artifactId>
-                <configuration>
-                    <skipTests>true</skipTests>
-                </configuration>
             </plugin>
         </plugins>
     </build>
