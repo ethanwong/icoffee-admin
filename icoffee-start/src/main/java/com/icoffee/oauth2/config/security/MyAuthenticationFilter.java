@@ -1,4 +1,4 @@
-package com.icoffee.oauth2.config;
+package com.icoffee.oauth2.config.security;
 
 import lombok.extern.log4j.Log4j2;
 import org.apache.commons.lang3.StringUtils;
@@ -31,6 +31,10 @@ public class MyAuthenticationFilter extends OncePerRequestFilter {
         }
         HttpServletRequest httpRequest = (HttpServletRequest) request;
         HttpServletResponse httpResponse = (HttpServletResponse) response;
+
+        if (request.getRequestURI().contains("oauth/token") && request.getParameter("grant_type").equals("password")) {
+            log.info("original captcha={}" + httpRequest.getSession().getAttribute("captcha"));
+        }
 
 
         filterChain.doFilter(request, response);

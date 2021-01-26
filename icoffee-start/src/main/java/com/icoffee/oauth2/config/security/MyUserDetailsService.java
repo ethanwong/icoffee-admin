@@ -1,4 +1,4 @@
-package com.icoffee.oauth2.config;
+package com.icoffee.oauth2.config.security;
 
 import com.icoffee.oauth2.model.UserDO;
 import com.icoffee.oauth2.service.UserService;

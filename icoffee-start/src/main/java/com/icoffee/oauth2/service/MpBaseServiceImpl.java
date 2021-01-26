@@ -6,7 +6,7 @@ import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.icoffee.common.dto.BaseDO;
 import com.icoffee.common.dto.PageDTO;
-import com.icoffee.common.dto.ResultDTO;
+import com.icoffee.common.dto.ResultDto;
 import com.icoffee.common.mybatis.MpBaseMapper;
 import lombok.extern.log4j.Log4j2;
 import org.apache.commons.lang3.StringUtils;
@@ -82,10 +82,10 @@ public class MpBaseServiceImpl<M extends MpBaseMapper<T>, T extends BaseDO> exte
      * @return
      */
     @Override
-    public ResultDTO selectAll() {
+    public ResultDto selectAll() {
         try {
             List<T> dataList = getBaseMapper().selectAll();
-            return new ResultDTO(ResultDTO.SUCCESS, dataList);
+            return new ResultDto(ResultDto.SUCCESS, dataList);
         } catch (Exception exception) {
             log.error("删除所有数据出现异常,异常信息为:{}", exception.getMessage());
             throw exception;
@@ -99,13 +99,13 @@ public class MpBaseServiceImpl<M extends MpBaseMapper<T>, T extends BaseDO> exte
      * @return
      */
     @Override
-    public ResultDTO deleteById(Serializable id) {
+    public ResultDto deleteById(Serializable id) {
         try {
             if (StringUtils.isBlank(id.toString())) {
-                return new ResultDTO(ResultDTO.FAILED, "ID不可为空");
+                return new ResultDto(ResultDto.FAILED, "ID不可为空");
             }
             removeById(id);
-            return ResultDTO.success();
+            return ResultDto.success();
         } catch (Exception exception) {
             log.error("根据ID删除实体出现异常,异常信息为:{}", exception.getMessage());
             throw exception;
@@ -119,13 +119,13 @@ public class MpBaseServiceImpl<M extends MpBaseMapper<T>, T extends BaseDO> exte
      * @return
      */
     @Override
-    public ResultDTO deleteByWrapper(QueryWrapper<T> queryWrapper) {
+    public ResultDto deleteByWrapper(QueryWrapper<T> queryWrapper) {
         try {
             if (queryWrapper == null) {
-                return new ResultDTO(ResultDTO.FAILED, "条件不可为空");
+                return new ResultDto(ResultDto.FAILED, "条件不可为空");
             }
             remove(queryWrapper);
-            return ResultDTO.success();
+            return ResultDto.success();
         } catch (Exception exception) {
             log.error("根据条件删除实体出现异常,异常信息为:{}", exception.getMessage());
             throw exception;
@@ -138,10 +138,10 @@ public class MpBaseServiceImpl<M extends MpBaseMapper<T>, T extends BaseDO> exte
      * @return
      */
     @Override
-    public ResultDTO deleteAll() {
+    public ResultDto deleteAll() {
         try {
             getBaseMapper().deleteAll();
-            return ResultDTO.success();
+            return ResultDto.success();
         } catch (Exception exception) {
             log.error("删除所有数据出现异常,异常信息为:{}", exception.getMessage());
             throw exception;

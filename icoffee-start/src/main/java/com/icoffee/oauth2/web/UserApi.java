@@ -2,7 +2,7 @@ package com.icoffee.oauth2.web;
 
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.icoffee.common.dto.PageDTO;
-import com.icoffee.common.dto.ResultDTO;
+import com.icoffee.common.dto.ResultDto;
 import com.icoffee.oauth2.model.UserDO;
 import com.icoffee.oauth2.service.UserService;
 import io.swagger.annotations.Api;
@@ -29,48 +29,48 @@ public class UserApi {
     @GetMapping(value = "/getById/{id}")
     @ResponseBody
     @ApiOperation(value = "根据ID获取用户", notes = "根据ID获取用户")
-    public ResultDTO getById(HttpServletRequest request, @PathVariable String id) {
-        return new ResultDTO<>(ResultDTO.SUCCESS, userService.getById(id));
+    public ResultDto getById(HttpServletRequest request, @PathVariable String id) {
+        return new ResultDto<>(ResultDto.SUCCESS, userService.getById(id));
     }
 
     @GetMapping(value = "/getByUserName/{username}")
     @ResponseBody
     @ApiOperation(value = "根据用户名获取用户", notes = "根据用户名获取用户")
-    public ResultDTO getByUserName(HttpServletRequest request, @PathVariable String username) {
+    public ResultDto getByUserName(HttpServletRequest request, @PathVariable String username) {
         UserDO userDO = userService.getByUsername(username);
         if(userDO == null){
-            return ResultDTO.failed();
+            return ResultDto.failed();
         }
-        return new ResultDTO<>(ResultDTO.SUCCESS, userDO);
+        return new ResultDto<>(ResultDto.SUCCESS, userDO);
     }
 
     @GetMapping(value = "/page")
     @ResponseBody
     @ApiOperation(value = "用户分页", notes = "用户分页")
-    public ResultDTO page(HttpServletRequest request, @RequestParam("pageNo") int pageNo, @RequestParam("pageSize") int pageSize) {
+    public ResultDto page(HttpServletRequest request, @RequestParam("pageNo") int pageNo, @RequestParam("pageSize") int pageSize) {
         QueryWrapper<UserDO> queryWrapper = new QueryWrapper<>();
 //        queryWrapper.ne("username", "root");
         PageDTO<UserDO> pageDTO = userService.selectPage(queryWrapper, pageNo,pageSize);
-        return new ResultDTO<>(ResultDTO.SUCCESS, pageDTO);
+        return new ResultDto<>(ResultDto.SUCCESS, pageDTO);
     }
 
     @PostMapping(value = "")
     @ResponseBody
     @ApiOperation(value = "新增用户", notes = "新增用户")
-    public ResultDTO create(HttpServletRequest request, @RequestBody UserDO userDO){
+    public ResultDto create(HttpServletRequest request, @RequestBody UserDO userDO){
         return userService.saveEntity(userDO);
     }
 
     @PutMapping(value = "")
     @ResponseBody
     @ApiOperation(value = "修改用户", notes = "修改用户")
-    public ResultDTO update(HttpServletRequest request, @RequestBody UserDO userDO){
+    public ResultDto update(HttpServletRequest request, @RequestBody UserDO userDO){
         return userService.updateEntity(userDO);
     }
 
     @DeleteMapping(value = "")
     @ApiOperation(value = "删除用户", notes = "删除用户")
-    public ResultDTO delete(HttpServletRequest request, @RequestParam String id) throws Exception {
+    public ResultDto delete(HttpServletRequest request, @RequestParam String id) throws Exception {
         return userService.deleteById(id);
     }
 }

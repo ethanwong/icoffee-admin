@@ -5,7 +5,7 @@ import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.extension.service.IService;
 import com.icoffee.common.dto.BaseDO;
 import com.icoffee.common.dto.PageDTO;
-import com.icoffee.common.dto.ResultDTO;
+import com.icoffee.common.dto.ResultDto;
 
 import java.io.Serializable;
 
@@ -33,7 +33,7 @@ public interface MpBaseService<T extends BaseDO> extends IService<T> {
      *
      * @return
      */
-    ResultDTO selectAll();
+    ResultDto selectAll();
 
     /**
      * 根据ID删除实体
@@ -41,7 +41,7 @@ public interface MpBaseService<T extends BaseDO> extends IService<T> {
      * @param id 实体主键
      * @return
      */
-    ResultDTO deleteById(Serializable id);
+    ResultDto deleteById(Serializable id);
 
     /**
      * 根据条件删除
@@ -49,12 +49,12 @@ public interface MpBaseService<T extends BaseDO> extends IService<T> {
      * @param queryWrapper 删除条件
      * @return
      */
-    ResultDTO deleteByWrapper(QueryWrapper<T> queryWrapper);
+    ResultDto deleteByWrapper(QueryWrapper<T> queryWrapper);
 
     /**
      * 删除所有数据
      *
      * @return
      */
-    ResultDTO deleteAll();
+    ResultDto deleteAll();
 }

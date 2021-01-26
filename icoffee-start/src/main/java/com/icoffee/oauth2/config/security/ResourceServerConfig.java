@@ -1,10 +1,11 @@
-package com.icoffee.oauth2.config;
+package com.icoffee.oauth2.config.security;
 
 import com.icoffee.common.annotation.AnonymousRequest;
 import com.icoffee.common.dto.RequestMethodEnum;
 import lombok.extern.log4j.Log4j2;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.ApplicationContext;
+import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.http.HttpMethod;
 import org.springframework.security.config.annotation.method.configuration.EnableGlobalMethodSecurity;
@@ -13,6 +14,7 @@ import org.springframework.security.oauth2.config.annotation.web.configuration.E
 import org.springframework.security.oauth2.config.annotation.web.configuration.ResourceServerConfigurerAdapter;
 import org.springframework.security.oauth2.config.annotation.web.configurers.ResourceServerSecurityConfigurer;
 import org.springframework.security.oauth2.provider.token.TokenStore;
+import org.springframework.security.web.context.request.async.WebAsyncManagerIntegrationFilter;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.method.HandlerMethod;
 import org.springframework.web.servlet.mvc.method.RequestMappingInfo;
@@ -22,7 +24,7 @@ import java.util.*;
 
 /**
  * @Name ResourceServerConfig
- * @Description ${DESCRIPTION}
+ * @Description 资源服务配置
  * @Author huangyingfeng
  * @Create 2020-02-27 15:34
  */
@@ -40,7 +42,6 @@ public class ResourceServerConfig extends ResourceServerConfigurerAdapter {
     public ResourceServerConfig(ApplicationContext applicationContext) {
         this.applicationContext = applicationContext;
     }
-
 
     @Override
     public void configure(ResourceServerSecurityConfigurer resources) {
@@ -88,7 +89,6 @@ public class ResourceServerConfig extends ResourceServerConfigurerAdapter {
                 // 所有请求都需要认证
                 .anyRequest().authenticated()
                 ;
-
     }
 
     private Map<String, Set<String>> getAnonymousUrl(Map<RequestMappingInfo, HandlerMethod> handlerMethodMap) {

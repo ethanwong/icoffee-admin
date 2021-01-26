@@ -2,7 +2,7 @@ package com.icoffee.oauth2.service.impl;
 
 import com.baomidou.mybatisplus.core.toolkit.Wrappers;
 import com.icoffee.oauth2.service.MpBaseServiceImpl;
-import com.icoffee.common.dto.ResultDTO;
+import com.icoffee.common.dto.ResultDto;
 import com.icoffee.oauth2.mapper.UserMapper;
 import com.icoffee.oauth2.model.UserDO;
 import com.icoffee.oauth2.service.UserService;
@@ -32,10 +32,10 @@ public class UserServiceImpl extends MpBaseServiceImpl<UserMapper, UserDO> imple
     }
 
     @Override
-    public ResultDTO saveEntity(UserDO userDO) {
+    public ResultDto saveEntity(UserDO userDO) {
         try {
             if (existsUsername(userDO.getUsername())) {
-                return ResultDTO.failed("账号已存在");
+                return ResultDto.failed("账号已存在");
             }
             if (StringUtils.isBlank(userDO.getPassword())) {
                 userDO.setPassword("123456");
@@ -44,20 +44,20 @@ public class UserServiceImpl extends MpBaseServiceImpl<UserMapper, UserDO> imple
 //            userDO.setAreaId(areaId.replace(",",""));
             save(userDO);
 //            userRoleService.save(new UserRoleDO(userDO.getId(), roleId));
-            return ResultDTO.success();
+            return ResultDto.success();
         } catch (Exception e) {
             e.printStackTrace();
-            return ResultDTO.failed();
+            return ResultDto.failed();
         }
     }
 
     @Override
-    public ResultDTO updateEntity(UserDO userDO) {
+    public ResultDto updateEntity(UserDO userDO) {
         try {
             if (existsUsername(userDO.getUsername())) {
                 UserDO checkBean = getByUsername(userDO.getUsername());
                 if (!userDO.getId().equals(checkBean.getId())) {
-                    return ResultDTO.failed("账号重复");
+                    return ResultDto.failed("账号重复");
                 }
             }
 
@@ -72,26 +72,26 @@ public class UserServiceImpl extends MpBaseServiceImpl<UserMapper, UserDO> imple
             userDO.setUpdateAt(System.currentTimeMillis());
             save(userDO);
 
-            return ResultDTO.success();
+            return ResultDto.success();
         } catch (Exception e) {
             e.printStackTrace();
-            return ResultDTO.failed();
+            return ResultDto.failed();
         }
     }
 
 
     @Override
-    public ResultDTO update(String realname, String email, String phoneNumber) throws Exception {
+    public ResultDto update(String realname, String email, String phoneNumber) throws Exception {
         return null;
     }
 
     @Override
-    public ResultDTO resetPwd(String oldPwd, String newPwd) throws Exception {
+    public ResultDto resetPwd(String oldPwd, String newPwd) throws Exception {
         return null;
     }
 
     @Override
-    public ResultDTO changeLocked(String id) throws Exception {
+    public ResultDto changeLocked(String id) throws Exception {
         return null;
     }
 

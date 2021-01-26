@@ -9,16 +9,11 @@ import org.apache.commons.lang3.StringUtils;
 
 import java.io.Serializable;
 
-/**
- * @Name ResultDTO
- * @Description 操作结果响应对象
- * @Author chenly
- * @Create 2019-12-02 11:25
- */
+
 @Data
 @JsonInclude(JsonInclude.Include.NON_NULL)
 @NoArgsConstructor
-public class ResultDTO<T> implements Serializable {
+public class ResultDto<T> implements Serializable {
 
     /**
      * 状态 0-成功，99-失败
@@ -45,34 +40,34 @@ public class ResultDTO<T> implements Serializable {
      */
     public static final int FAILED = 99;
 
-    public static ResultDTO success() {
-        return new ResultDTO(SUCCESS);
+    public static ResultDto success() {
+        return new ResultDto(SUCCESS);
     }
 
-    public static ResultDTO failed() {
-        return new ResultDTO(FAILED);
+    public static ResultDto failed() {
+        return new ResultDto(FAILED);
     }
 
-    public static ResultDTO failed(String message) {
-        return new ResultDTO(FAILED, message);
+    public static ResultDto failed(String message) {
+        return new ResultDto(FAILED, message);
     }
 
-    public static ResultDTO success(Object object) {
-        ResultDTO resultDTO = new ResultDTO(SUCCESS);
+    public static ResultDto success(Object object) {
+        ResultDto resultDTO = new ResultDto(SUCCESS);
         resultDTO.data = object;
         return resultDTO;
     }
 
-    public ResultDTO(Integer status) {
+    public ResultDto(Integer status) {
         setCode(status);
     }
 
-    public ResultDTO(Integer code, String message) {
+    public ResultDto(Integer code, String message) {
         setCode(code);
         this.message = message;
     }
 
-    public ResultDTO(Integer code, T obj) {
+    public ResultDto(Integer code, T obj) {
         setCode(code);
         this.data = obj;
     }

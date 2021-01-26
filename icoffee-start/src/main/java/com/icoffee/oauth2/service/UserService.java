@@ -1,7 +1,7 @@
 package com.icoffee.oauth2.service;
 
 
-import com.icoffee.common.dto.ResultDTO;
+import com.icoffee.common.dto.ResultDto;
 import com.icoffee.oauth2.model.UserDO;
 
 /**
@@ -26,7 +26,7 @@ public interface UserService extends MpBaseService<UserDO> {
      * @param userDO 实体
      * @return
      */
-    ResultDTO saveEntity(UserDO userDO);
+    ResultDto saveEntity(UserDO userDO);
 
     /**
      * 更新对象
@@ -34,7 +34,7 @@ public interface UserService extends MpBaseService<UserDO> {
      * @param userDO 实体
      * @return
      */
-    ResultDTO updateEntity(UserDO userDO);
+    ResultDto updateEntity(UserDO userDO);
 
     /**
      * 更新基础信息
@@ -44,7 +44,7 @@ public interface UserService extends MpBaseService<UserDO> {
      * @param phoneNumber 电话
      * @return
      */
-    ResultDTO update(String realname, String email, String phoneNumber) throws Exception;
+    ResultDto update(String realname, String email, String phoneNumber) throws Exception;
 
     /**
      * 修改密码
@@ -53,13 +53,13 @@ public interface UserService extends MpBaseService<UserDO> {
      * @param newPwd 新密码
      * @return
      */
-    ResultDTO resetPwd(String oldPwd, String newPwd) throws Exception;
+    ResultDto resetPwd(String oldPwd, String newPwd) throws Exception;
 
     /**
      * 改变用户锁定状态
      *
      * @param id 主键
      */
-    ResultDTO changeLocked(String id) throws Exception;
+    ResultDto changeLocked(String id) throws Exception;
 
 }
