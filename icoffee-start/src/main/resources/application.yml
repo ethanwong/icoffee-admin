@@ -1,14 +1,8 @@
-server:
-  port: 8080
-management:
-  endpoint:
-    health:
-      enabled: true
 spring:
   profiles:
     active: dev
   application:
-    name: springcloud-oauth2
+    name: icoffee-admin
   mvc:
     view:
       prefix: classpath:/templates/
@@ -83,4 +77,13 @@ spring:
           # 忽略过滤格式
           exclusions: "*.js,*.gif,*.jpg,*.png,*.css,*.ico,/druid/*"
           enabled: true
+server:
+  port: 8080
+management:
+  endpoint:
+    health:
+      enabled: true
+jwt:
+  token:
+    secretKey: 088c49f786894126870318483b4fff7d
 

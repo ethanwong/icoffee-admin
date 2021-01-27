@@ -1,98 +1,83 @@
 package com.icoffee.common.dto;
 
-import com.alibaba.fastjson.JSONObject;
-import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonInclude;
+import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-import org.apache.commons.lang3.StringUtils;
-
-import java.io.Serializable;
-
 
 @Data
 @JsonInclude(JsonInclude.Include.NON_NULL)
 @NoArgsConstructor
-public class ResultDto<T> implements Serializable {
+@AllArgsConstructor
+public class ResultDto {
+
+    public static final String SUCCESS_MESSAGE = "操作成功！";
+    public static final String FAIL_MESSAGE = "操作失败！";
 
     /**
-     * 状态 0-成功，99-失败
+     * 是否成功
      */
-    private Integer code = 0;
-
+    public boolean isSuccess;
     /**
-     * 消息内容
+     * 提示信息
      */
-    private String message;
-
+    public String message;
     /**
-     * 数据内容
+     * 数据域
      */
-    private T data;
+    public Object data;
 
-    /**
-     * 成功状态
-     */
-    public static final int SUCCESS = 200;
-
-    /**
-     * 失败状态
-     */
-    public static final int FAILED = 99;
-
-    public static ResultDto success() {
-        return new ResultDto(SUCCESS);
-    }
-
-    public static ResultDto failed() {
-        return new ResultDto(FAILED);
-    }
-
-    public static ResultDto failed(String message) {
-        return new ResultDto(FAILED, message);
-    }
-
-    public static ResultDto success(Object object) {
-        ResultDto resultDTO = new ResultDto(SUCCESS);
-        resultDTO.data = object;
-        return resultDTO;
-    }
-
-    public ResultDto(Integer status) {
-        setCode(status);
-    }
-
-    public ResultDto(Integer code, String message) {
-        setCode(code);
-        this.message = message;
-    }
-
-    public ResultDto(Integer code, T obj) {
-        setCode(code);
-        this.data = obj;
-    }
-
-    public void setCode(Integer code) {
-        this.code = code;
-        if (code == SUCCESS) {
-            this.message = "操作成功！";
+    public ResultDto(boolean isSuccess) {
+        this.isSuccess = isSuccess;
+        if (isSuccess) {
+            this.message = SUCCESS_MESSAGE;
         } else {
-            this.message = "操作失败！";
+            this.message = FAIL_MESSAGE;
         }
     }
 
-    public static String resultJson(Integer code, String message) {
-        if (code == null || StringUtils.isBlank(message)) {
-            return null;
+    public ResultDto(boolean isSuccess, Object data) {
+        this.isSuccess = isSuccess;
+        if (isSuccess) {
+            this.message = SUCCESS_MESSAGE;
+        } else {
+            this.message = FAIL_MESSAGE;
         }
-        JSONObject jsonObject = new JSONObject();
-        jsonObject.put("code", code);
-        jsonObject.put("message", message);
-        return jsonObject.toJSONString();
+        this.data = data;
     }
 
-    @JsonIgnore
-    public boolean isFailed() {
-        return FAILED == this.code;
+    /**
+     * 操作成功响应
+     * @return
+     */
+    public static ResultDto returnSuccess() {
+        return new ResultDto(true);
+    }
+
+    /**
+     * 操作异常响应
+     * @param message
+     * @return
+     */
+    public static ResultDto returnFail(String message) {
+        return new ResultDto(false, message, null);
+    }
+
+    /**
+     * 操作成功响应
+     * @param message
+     * @return
+     */
+    public static ResultDto returnSuccess(String message) {
+        return new ResultDto(true, message, null);
+    }
+
+    /**
+     * 操作成功响应数据
+     * @param data
+     * @return
+     */
+    public static ResultDto returnSuccessData(Object data){
+        return new ResultDto(true, data);
     }
 }
