@@ -17,7 +17,7 @@ public class ResultDto {
     /**
      * 是否成功
      */
-    public boolean isSuccess;
+    public boolean success;
     /**
      * 提示信息
      */
@@ -27,18 +27,18 @@ public class ResultDto {
      */
     public Object data;
 
-    public ResultDto(boolean isSuccess) {
-        this.isSuccess = isSuccess;
-        if (isSuccess) {
+    public ResultDto(boolean success) {
+        this.success = success;
+        if (success) {
             this.message = SUCCESS_MESSAGE;
         } else {
             this.message = FAIL_MESSAGE;
         }
     }
 
-    public ResultDto(boolean isSuccess, Object data) {
-        this.isSuccess = isSuccess;
-        if (isSuccess) {
+    public ResultDto(boolean success, Object data) {
+        this.success = success;
+        if (success) {
             this.message = SUCCESS_MESSAGE;
         } else {
             this.message = FAIL_MESSAGE;
@@ -48,6 +48,7 @@ public class ResultDto {
 
     /**
      * 操作成功响应
+     *
      * @return
      */
     public static ResultDto returnSuccess() {
@@ -56,6 +57,7 @@ public class ResultDto {
 
     /**
      * 操作异常响应
+     *
      * @param message
      * @return
      */
@@ -65,6 +67,7 @@ public class ResultDto {
 
     /**
      * 操作成功响应
+     *
      * @param message
      * @return
      */
@@ -74,10 +77,21 @@ public class ResultDto {
 
     /**
      * 操作成功响应数据
+     *
      * @param data
      * @return
      */
-    public static ResultDto returnSuccessData(Object data){
+    public static ResultDto returnSuccessData(Object data) {
         return new ResultDto(true, data);
+    }
+
+    /**
+     * 操作成功响应数据和信息
+     * @param message
+     * @param data
+     * @return
+     */
+    public static ResultDto returnSuccessMessageData(String message, Object data) {
+        return new ResultDto(true, message, data);
     }
 }

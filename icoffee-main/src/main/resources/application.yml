@@ -1,0 +1,90 @@
+spring:
+
+  profiles:
+    active: dev
+  application:
+    name: icoffee-admin
+  mvc:
+    view:
+      prefix: classpath:/templates/
+      suffix: .html
+  devtools:
+    restart:
+      enabled: true
+      additional-paths: src/main/java
+  jpa:
+    database: MYSQL
+    show-sql: false
+    hibernate:
+      ddl-auto: update # Hibernate ddl auto (create, create-drop, update)
+      naming-strategy: org.hibernate.cfg.ImprovedNamingStrategy
+    database-platform: org.hibernate.dialect.MySQL5InnoDBDialect
+  datasource:
+    url: jdbc:mysql://127.0.0.1:3306/springcloud_oauth?useUnicode=true&characterEncoding=UTF-8&autoReconnect=true&useSSL=false&zeroDateTimeBehavior=convertToNull&serverTimezone=UTC
+    username: root
+    password: 123456
+    driver-class-name: com.mysql.cj.jdbc.Driver
+    type: com.alibaba.druid.pool.DruidDataSource
+    druid:
+      #初始化时建立物理连接的个数
+      initial-size: 5
+      #最小连接池数量
+      min-idle: 5
+      #最大连接池数量
+      max-active: 20
+      #获取连接时最大等待时间,单位毫秒.
+      #配置了maxWait之后,缺省启用公平锁,并发效率会有所下降
+      #如果需要可以通过配置useUnfairLock属性为true使用非公平锁
+      maxWait: 60000
+      #用来检测连接是否有效的sql,要求是一个查询语句.
+      #如果validationQuery为null,testOnBorrow|testOnReturn|testWhileIdle都不会起作用
+      validationQuery: SELECT 1 FROM DUAL
+      #申请连接时执行validationQuery检测连接是否有效,该配置会降低性能
+      testOnBorrow: false
+      #归还连接时执行validationQuery检测连接是否有效,该配置会降低性能
+      testOnReturn: false
+      #申请连接的时候检测,如果空闲时间大于timeBetweenEvictionRunsMillis,执行validationQuery检测连接是否有效
+      #该配置不影响性能,且提升安全性
+      testWhileIdle: true
+      #Destroy线程检测连接的间隔时间,并作为testWhileIdle属性的判断依据
+      timeBetweenEvictionRunsMillis: 60000
+      #Destory线程中如果检测到当前连接的最后活跃时间和当前时间的差值大于minEvictableIdleTimeMillis,则关闭当前连接
+      minEvictableIdleTimeMillis: 300000
+      filter:
+        wall:
+          config:
+            #开放非基本语句拦截
+            none-base-statement-allow: true
+            #开放批量操作拦截
+            multi-statement-allow: true
+        stat:
+          #开启慢sql监控
+          log-slow-sql: true
+          #定义慢查询时间,单位毫秒
+          slow-sql-millis: 3000
+
+      stat-view-servlet:
+        #登录后台监控用户名
+        login-username: root
+        #登录后台监控密码
+        login-password: 123456
+        reset-enable: false
+        url-pattern: /druid/*
+        allow: 127.0.0.1
+        enabled: true
+      web-stat-filter:
+          # 添加过滤规则
+          url-pattern: /*
+          # 忽略过滤格式
+          exclusions: "*.js,*.gif,*.jpg,*.png,*.css,*.ico,/druid/*"
+          enabled: true
+server:
+  port: 8080
+management:
+  endpoint:
+    health:
+      enabled: true
+jwt:
+  token:
+    secretKey: 088c49f786894126870318483b4fff7d
+

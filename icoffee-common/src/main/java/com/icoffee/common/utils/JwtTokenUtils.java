@@ -30,7 +30,7 @@ public class JwtTokenUtils {
      * @param secretKey SK
      * @return
      */
-    public static DecodedJWT verifyToken(String token, String secretKey) {
+    public static DecodedJWT verifyToken(String token, String secretKey) throws TokenAuthException {
         Assert.requireNonEmpty(token, "token不能为空！");
         Assert.requireNonEmpty(secretKey, "secretKey不能为空！");
         try {
@@ -59,7 +59,7 @@ public class JwtTokenUtils {
      * @param token TOKEN
      * @return
      */
-    public static Header decodeTokenHeader(String token) {
+    public static Header decodeTokenHeader(String token) throws TokenAuthException {
         Assert.requireNonEmpty(token);
         String[] parts = {};
         try {
@@ -84,7 +84,7 @@ public class JwtTokenUtils {
      * @param token TOKEN
      * @return
      */
-    public static Payload decodeTokenPayload(String token) {
+    public static Payload decodeTokenPayload(String token) throws TokenAuthException {
         Assert.requireNonEmpty(token, "token不能为空！");
         String[] parts = {};
         try {

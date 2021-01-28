@@ -19,7 +19,7 @@
 
     <modules>
         <module>icoffee-common</module>
-        <module>icoffee-start</module>
+        <module>icoffee-main</module>
         <module>icoffee-system</module>
         <module>icoffee-generator</module>
     </modules>
