@@ -1,5 +1,5 @@
 # icoffee-admin
-命名为"icoffee-admin"，"爱咖啡管理系统"，因为咖啡和JAVA比较搭配；系统基于SpringBoot、SpringCloud、OAuth2、MyBatisPlus的管理系统
+命名为"icoffee-admin"，"爱咖啡管理系统"，因为咖啡和JAVA比较搭配；系统基于SpringBoot、SpringSecurity、MyBatisPlus的管理系统
 
 ## 模块说明
 1、icoffee-main:系统核心模块，底层框架在这里进行配置，系统从这里启动；
