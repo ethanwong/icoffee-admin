@@ -1,6 +1,7 @@
 package com.icoffee.common.dto;
 
 import com.fasterxml.jackson.annotation.JsonInclude;
+import io.swagger.annotations.ApiModelProperty;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -17,14 +18,17 @@ public class ResultDto {
     /**
      * 是否成功
      */
+    @ApiModelProperty(value = "是否成功")
     public boolean success;
     /**
      * 提示信息
      */
+    @ApiModelProperty(value = "提示信息")
     public String message;
     /**
      * 数据域
      */
+    @ApiModelProperty(value = "数据域")
     public Object data;
 
     public ResultDto(boolean success) {

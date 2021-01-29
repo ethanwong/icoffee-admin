@@ -8,6 +8,8 @@ import com.icoffee.system.dto.LoginUserDto;
 import com.icoffee.system.dto.PermissionDto;
 import com.icoffee.system.service.UserService;
 import com.wf.captcha.utils.CaptchaUtil;
+import io.swagger.annotations.Api;
+import io.swagger.annotations.ApiOperation;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.log4j.Log4j2;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -18,26 +20,25 @@ import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.validation.BindingResult;
 import org.springframework.validation.annotation.Validated;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 import java.util.Date;
 import java.util.List;
 
 /**
- * @Name LoginController
+ * @Name SecurityController
  * @Description
  * @Author huangyingfeng
  * @Create 2021-01-25 16:24
  */
+@Api(tags = {"认证API"})
 @Log4j2
 @RestController
 @RequiredArgsConstructor
 @RequestMapping("security")
-public class LoginController {
+public class SecurityController {
 
     private final AuthenticationManagerBuilder authenticationManagerBuilder;
 
@@ -67,6 +68,7 @@ public class LoginController {
      * @param bindingResult
      * @return
      */
+    @ApiOperation(value = "登录", notes = "提交用户名、密码、验证码进行登录")
     @PostMapping("login")
     public ResultDto login(HttpServletRequest request, @Validated @RequestBody LoginUserDto loginUserDto, BindingResult bindingResult) {
 
@@ -108,10 +110,41 @@ public class LoginController {
      * @param request
      * @return
      */
+    @ApiOperation(value = "退出登录", notes = "")
     @PostMapping("logout")
     public ResultDto logout(HttpServletRequest request) {
         //todo 如果有设置缓存，需要将缓存中的token移除
         return ResultDto.returnSuccess();
+    }
+
+    /**
+     * 获取验证码
+     *
+     * @param request
+     * @param response
+     * @throws Exception
+     */
+    @ApiOperation(value = "获取验证码", notes = "")
+    @GetMapping("/captcha")
+    public void captcha(HttpServletRequest request, HttpServletResponse response) throws Exception {
+        CaptchaUtil.out(request, response);
+    }
+
+    /**
+     * 校验验证码
+     *
+     * @param request
+     * @param response
+     * @param captcha
+     * @return
+     */
+    @ApiOperation(value = "校验验证码", notes = "")
+    @GetMapping("/captcha/check/{captcha}")
+    public boolean check(HttpServletRequest request, HttpServletResponse response, @PathVariable String captcha) {
+        String original = (String) request.getSession().getAttribute("captcha");
+        log.info("input captcha={} , original captcha={}", captcha, original);
+
+        return CaptchaUtil.ver(captcha, request);
     }
 
 }
