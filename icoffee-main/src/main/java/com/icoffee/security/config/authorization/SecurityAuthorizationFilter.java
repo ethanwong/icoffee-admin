@@ -48,7 +48,7 @@ public class SecurityAuthorizationFilter extends AbstractSecurityInterceptor imp
     }
 
     @Override
-    public void doFilter(ServletRequest servletRequest, ServletResponse servletResponse, FilterChain filterChain) throws IOException, ServletException, AccessDeniedException,AuthenticationException {
+    public void doFilter(ServletRequest servletRequest, ServletResponse servletResponse, FilterChain filterChain) throws IOException, ServletException, AccessDeniedException, AuthenticationException {
         FilterInvocation filterInvocation = new FilterInvocation(servletRequest, servletResponse, filterChain);
         invoke(filterInvocation);
     }

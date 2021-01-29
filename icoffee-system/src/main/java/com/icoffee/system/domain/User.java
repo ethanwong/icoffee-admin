@@ -13,10 +13,10 @@ import javax.persistence.Table;
 import java.io.Serializable;
 
 /**
- * @Name UserDO
- * @Description 用户实体类
- * @Author chenly
- * @Create 2019-11-29 16:50
+ * @Name User
+ * @Description
+ * @Author huangyingfeng
+ * @Create 2021-01-29 18:06
  */
 @Data
 @Entity
@@ -79,4 +79,9 @@ public class User extends BaseDomain implements Serializable {
      */
     @ApiModelProperty(value = "角色ID")
     private String roleId;
+
+    /**
+     * 是否锁定，0-否，1-是
+     */
+    private int locked = 0;
 }

@@ -68,6 +68,7 @@ public interface UserService extends MpBaseService<User> {
 
     /**
      * 获取用户授权信息
+     *
      * @param username
      * @return
      */

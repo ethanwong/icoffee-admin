@@ -17,11 +17,17 @@ import java.util.UUID;
 @Data
 public class BaseDomain implements Serializable {
 
-    private static final long serialVersionUID = 1L;
-
     /**
      * ID
      */
     @Id
-    private String id = UUID.randomUUID().toString().replace("-","");
+    private String id = UUID.randomUUID().toString().replace("-", "");
+    /**
+     * 创建时间（时间戳）
+     */
+    private Long createAt = System.currentTimeMillis();
+    /**
+     * 更新时间（时间戳）
+     */
+    private Long updateAt;
 }

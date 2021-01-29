@@ -34,47 +34,47 @@ public class PermissionTestController {
 
     @PreAuthorize("permitAll()")
     @GetMapping("permitAll")
-    public String testPermitAll(){
+    public String testPermitAll() {
         return "测试 @PreAuthorize(\"permitAll()\") 生效！";
     }
 
     @PreAuthorize("isAnonymous()")
     @GetMapping("isAnonymous")
-    public String testIsAnonymous(){
+    public String testIsAnonymous() {
         return "测试 @PreAuthorize(\"isAnonymous()\") 生效！";
     }
 
     @PreAuthorize("true")
     @GetMapping("true")
-    public String testTrue(){
+    public String testTrue() {
         return "测试 @PreAuthorize(\"true\") 生效！";
     }
 
     @PreAuthorize("false")
     @GetMapping("false")
-    public String testFalse(){
+    public String testFalse() {
         return "测试 @PreAuthorize(\"false\") 生效！";
     }
 
     @PreAuthorize("isFullyAuthenticated()")
     @GetMapping("isFullyAuthenticated")
-    public String testIsFullyAuthenticated(){
+    public String testIsFullyAuthenticated() {
         return "测试 @PreAuthorize(\"isFullyAuthenticated\") 生效！";
     }
 
 
     @AnonymousGetMapping("test")
-    public String testGet(){
+    public String testGet() {
         return "没有设置安全拦截的请求！";
     }
 
     @AnonymousPostMapping("test")
-    public String testPost(){
+    public String testPost() {
         return "没有设置安全拦截的请求！";
     }
 
     @GetMapping("none")
-    public String testNone(){
+    public String testNone() {
         return "没有设置安全拦截的请求！";
     }
 

@@ -24,6 +24,7 @@ public class SecurityAccessDecisionManager implements AccessDecisionManager {
 
     /**
      * 检查请求的资源是否有授权
+     *
      * @param authentication
      * @param object
      * @param configAttributes

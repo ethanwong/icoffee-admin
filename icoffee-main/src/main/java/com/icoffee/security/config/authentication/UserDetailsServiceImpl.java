@@ -40,16 +40,16 @@ public class UserDetailsServiceImpl implements UserDetailsService {
         User userDO = userService.getByUsername(username);
 
         // 查询数据库操作
-        if(userDO == null){
+        if (userDO == null) {
             throw new UsernameNotFoundException("the user is not found");
-        }else{
+        } else {
             // 用户角色也应在数据库中获取
             List<SimpleGrantedAuthority> authorities = new ArrayList<>();
             authorities.add(new SimpleGrantedAuthority("test:admin"));
 //            authorities.add(new SimpleGrantedAuthority("test:coffee"));
 
             String password = userDO.getPassword();
-            return new org.springframework.security.core.userdetails.User(username,password, authorities);
+            return new org.springframework.security.core.userdetails.User(username, password, authorities);
         }
     }
 }
