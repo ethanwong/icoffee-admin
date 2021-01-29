@@ -37,7 +37,7 @@ import java.util.List;
 @Log4j2
 @RestController
 @RequiredArgsConstructor
-@RequestMapping("security")
+@RequestMapping("/api/security")
 public class SecurityController {
 
     private final AuthenticationManagerBuilder authenticationManagerBuilder;
