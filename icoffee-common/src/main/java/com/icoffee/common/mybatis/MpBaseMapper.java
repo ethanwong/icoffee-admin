@@ -1,7 +1,7 @@
 package com.icoffee.common.mybatis;
 
 import com.baomidou.mybatisplus.core.mapper.BaseMapper;
-import com.icoffee.common.dto.BaseDO;
+import com.icoffee.common.domain.BaseDomain;
 
 import java.util.List;
 
@@ -11,7 +11,7 @@ import java.util.List;
  * @Author chenly
  * @Create 2019-12-10 15:40
  */
-public interface MpBaseMapper<T extends BaseDO> extends BaseMapper<T> {
+public interface MpBaseMapper<T extends BaseDomain> extends BaseMapper<T> {
 
     /**
      * 删除所有数据

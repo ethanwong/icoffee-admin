@@ -4,7 +4,7 @@ import org.mybatis.spring.annotation.MapperScan;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 
 /**
- * @Name SpringCloudApplication
+ * @Name SpringApplication
  * @Description 系统从这里启动
  * @Author huangyingfeng
  * @Create 2021-01-21 15:39

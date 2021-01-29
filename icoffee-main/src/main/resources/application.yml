@@ -1,13 +1,8 @@
 spring:
-
   profiles:
-    active: dev
+    active: @PROFILE@
   application:
     name: icoffee-admin
-  mvc:
-    view:
-      prefix: classpath:/templates/
-      suffix: .html
   devtools:
     restart:
       enabled: true
@@ -20,9 +15,9 @@ spring:
       naming-strategy: org.hibernate.cfg.ImprovedNamingStrategy
     database-platform: org.hibernate.dialect.MySQL5InnoDBDialect
   datasource:
-    url: jdbc:mysql://127.0.0.1:3306/springcloud_oauth?useUnicode=true&characterEncoding=UTF-8&autoReconnect=true&useSSL=false&zeroDateTimeBehavior=convertToNull&serverTimezone=UTC
-    username: root
-    password: 123456
+    url: ${mysql.url}
+    username: ${mysql.username}
+    password: ${mysql.password}
     driver-class-name: com.mysql.cj.jdbc.Driver
     type: com.alibaba.druid.pool.DruidDataSource
     druid:
@@ -73,18 +68,19 @@ spring:
         allow: 127.0.0.1
         enabled: true
       web-stat-filter:
-          # 添加过滤规则
-          url-pattern: /*
-          # 忽略过滤格式
-          exclusions: "*.js,*.gif,*.jpg,*.png,*.css,*.ico,/druid/*"
-          enabled: true
-server:
-  port: 8080
+        # 添加过滤规则
+        url-pattern: /*
+        # 忽略过滤格式
+        exclusions: "*.js,*.gif,*.jpg,*.png,*.css,*.ico,/druid/*"
+        enabled: true
 management:
+  endpoints:
+    web:
+      exposure:
+        include: "*"
   endpoint:
     health:
+      show-details: ALWAYS
+    shutdown:
       enabled: true
-jwt:
-  token:
-    secretKey: 088c49f786894126870318483b4fff7d
 
