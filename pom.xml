@@ -22,6 +22,7 @@
         <module>icoffee-main</module>
         <module>icoffee-system</module>
         <module>icoffee-generator</module>
+        <module>icoffee-business</module>
     </modules>
 
     <properties>

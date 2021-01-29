@@ -33,7 +33,7 @@ import java.util.List;
  * @Author huangyingfeng
  * @Create 2021-01-25 16:24
  */
-@Api(tags = {"认证API"})
+@Api(tags = {"权限管理-认证API"})
 @Log4j2
 @RestController
 @RequiredArgsConstructor

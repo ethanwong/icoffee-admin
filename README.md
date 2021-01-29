@@ -10,3 +10,5 @@
 
 4、icoffee-generator:代码生成模块；
 
+5、icoffee-business:业务功能模块，新功能在此添加开发，也可以自行创建其他子模块；
+

@@ -23,7 +23,7 @@ import java.util.List;
  * @Author huangyingfeng
  * @Create 2021-01-25 16:24
  */
-@Api(tags = {"角色API"})
+@Api(tags = {"系统管理-角色API"})
 @Controller
 @RequestMapping("/api/system/role")
 public class RoleController {
@@ -32,14 +32,14 @@ public class RoleController {
     private RoleService roleService;
 
     @ApiOperation(value = "新增角色", notes = "新增角色")
-    @PostMapping(value = "/create")
+    @PostMapping(value = "")
     @ResponseBody
     public ResultDto create(HttpServletRequest request, @ModelAttribute("role") Role role) {
         return roleService.saveEntity(role);
     }
 
     @ApiOperation(value = "修改角色", notes = "修改角色")
-    @PutMapping(value = "/update")
+    @PutMapping(value = "")
     @ResponseBody
     public ResultDto update(HttpServletRequest request, @ModelAttribute("role") Role role) {
         return roleService.updateEntity(role);
@@ -53,7 +53,7 @@ public class RoleController {
     }
 
     @ApiOperation(value = "删除", notes = "删除")
-    @DeleteMapping(value = "/delete")
+    @DeleteMapping(value = "")
     @ResponseBody
     public ResultDto delete(HttpServletRequest request, @RequestParam String id) {
         return roleService.deleteById(id);

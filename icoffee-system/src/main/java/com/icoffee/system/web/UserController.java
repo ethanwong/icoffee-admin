@@ -19,7 +19,7 @@ import javax.servlet.http.HttpServletRequest;
  * @Author huangyingfeng
  * @Create 2021-01-25 16:24
  */
-@Api(tags = {"用户API"})
+@Api(tags = {"系统管理-用户API"})
 @RestController
 @RequestMapping(value = "/api/system/user")
 public class UserController {
@@ -48,11 +48,11 @@ public class UserController {
         return userService.deleteById(id);
     }
 
-    @GetMapping(value = "/getById/{id}")
+    @GetMapping(value = "/getById/{userId}")
     @ResponseBody
     @ApiOperation(value = "根据ID获取用户", notes = "根据ID获取用户")
-    public ResultDto getById(HttpServletRequest request, @PathVariable String id) {
-        return ResultDto.returnSuccessData(userService.getById(id));
+    public ResultDto getById(HttpServletRequest request, @PathVariable String userId) {
+        return ResultDto.returnSuccessData(userService.getById(userId));
     }
 
     @GetMapping(value = "/getByUserName/{username}")

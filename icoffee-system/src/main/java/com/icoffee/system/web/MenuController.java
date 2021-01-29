@@ -9,7 +9,6 @@ import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
-import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpServletRequest;
@@ -21,18 +20,13 @@ import java.util.List;
  * @Author huangyingfeng
  * @Create 2021-01-25 16:24
  */
-@Api(tags = {"菜单API"})
+@Api(tags = {"系统管理-菜单API"})
 @Controller
 @RequestMapping("/api/system/menu")
 public class MenuController {
 
     @Autowired
     private MenuService menuService;
-
-    @GetMapping(value = "")
-    public String list(Model model) {
-        return "security/menu/menu";
-    }
 
     @ApiOperation(value = "获取菜单树", notes = "")
     @GetMapping(value = "/getTree")
@@ -43,14 +37,14 @@ public class MenuController {
     }
 
     @ApiOperation(value = "创建", notes = "")
-    @PostMapping(value = "/create")
+    @PostMapping(value = "")
     @ResponseBody
     public ResultDto create(@ModelAttribute("menu") Menu menu) {
         return menuService.saveEntity(menu);
     }
 
     @ApiOperation(value = "更新", notes = "")
-    @PostMapping(value = "/update")
+    @PutMapping(value = "")
     @ResponseBody
     public ResultDto update(@ModelAttribute("menu") Menu menu) {
         return menuService.updateEntity(menu);
@@ -65,7 +59,7 @@ public class MenuController {
     }
 
     @ApiOperation(value = "删除", notes = "")
-    @DeleteMapping(value = "/delete")
+    @DeleteMapping(value = "")
     @ResponseBody
     public ResultDto delete(HttpServletRequest request, @RequestParam String id) {
         return menuService.delete(id);

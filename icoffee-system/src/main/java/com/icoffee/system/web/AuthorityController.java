@@ -22,7 +22,7 @@ import java.util.List;
  * @Author huangyingfeng
  * @Create 2021-01-25 16:24
  */
-@Api(tags = {"鉴权API"})
+@Api(tags = {"系统管理-鉴权API"})
 @Controller
 @RequestMapping("/api/system/authority")
 public class AuthorityController {
@@ -31,7 +31,7 @@ public class AuthorityController {
     private AuthorityService authorityService;
 
     @ApiOperation(value = "批量创建授权", notes = "")
-    @PostMapping(value = "/batchCreate")
+    @PostMapping(value = "/batch")
     @ResponseBody
     public ResultDto batchCreate(@RequestParam String menuId) {
         return authorityService.batchSave(menuId);
@@ -46,7 +46,7 @@ public class AuthorityController {
     }
 
     @ApiOperation(value = "创建", notes = "")
-    @PostMapping(value = "/create")
+    @PostMapping(value = "")
     @ResponseBody
     public ResultDto create(@ModelAttribute("authority") Authority authority) {
         String method = authority.getMethod();
@@ -59,7 +59,7 @@ public class AuthorityController {
     }
 
     @ApiOperation(value = "更新", notes = "")
-    @PostMapping(value = "/update")
+    @PutMapping(value = "")
     @ResponseBody
     public ResultDto update(@ModelAttribute("authority") Authority authority) {
         String method = authority.getMethod();
@@ -72,7 +72,7 @@ public class AuthorityController {
     }
 
     @ApiOperation(value = "批量删除", notes = "")
-    @PostMapping(value = "/batchDelete")
+    @DeleteMapping(value = "/batch")
     @ResponseBody
     public ResultDto batchDelete(@RequestParam List<String> ids) {
         return authorityService.batchDelete(ids);
