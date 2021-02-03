@@ -4,9 +4,6 @@ package com.icoffee.system.service;
 import com.icoffee.common.dto.ResultDto;
 import com.icoffee.common.service.MpBaseService;
 import com.icoffee.system.domain.User;
-import com.icoffee.system.dto.PermissionDto;
-
-import java.util.List;
 
 /**
  * @Name UserService
@@ -66,11 +63,5 @@ public interface UserService extends MpBaseService<User> {
      */
     ResultDto changeLocked(String id) throws Exception;
 
-    /**
-     * 获取用户授权信息
-     *
-     * @param username
-     * @return
-     */
-    List<PermissionDto> getUserPermission(String username);
+
 }

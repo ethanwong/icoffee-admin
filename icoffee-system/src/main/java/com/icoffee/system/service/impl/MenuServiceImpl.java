@@ -1,13 +1,14 @@
 package com.icoffee.system.service.impl;
 
+import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.core.toolkit.StringUtils;
 import com.baomidou.mybatisplus.core.toolkit.Wrappers;
+import com.icoffee.common.dto.PageDto;
 import com.icoffee.common.dto.ResultDto;
 import com.icoffee.common.service.MpBaseServiceImpl;
 import com.icoffee.system.domain.Authority;
 import com.icoffee.system.domain.Menu;
 import com.icoffee.system.domain.RoleMenu;
-import com.icoffee.system.domain.User;
 import com.icoffee.system.dto.MenuDto;
 import com.icoffee.system.dto.XTreeDto;
 import com.icoffee.system.mapper.MenuMapper;
@@ -39,64 +40,63 @@ public class MenuServiceImpl extends MpBaseServiceImpl<MenuMapper, Menu> impleme
     private UserService accountService;
     @Autowired
     private AuthorityService authorityService;
+    @Autowired
+    private MenuService menuService;
+
+    private void setChildrenList(Menu parentMenu) {
+        List<Menu> childrenList = getBaseMapper().selectList(Wrappers.<Menu>lambdaQuery().eq(Menu::getParentId, parentMenu.getId()).orderByAsc(Menu::getOrderNo));
+        if (childrenList != null && !childrenList.isEmpty()) {
+            for (Menu child : childrenList) {
+                setChildrenList(child);
+            }
+            parentMenu.setChildren(childrenList);
+        }
+    }
 
 
     @Override
     public ResultDto getMenu() {
-        //TODO
-        String username = "";
-        User account = accountService.getByUsername(username);
-        if (account == null) {
-            return null;
+
+        List<Menu> parentList = menuService.getBaseMapper().selectList(Wrappers.<Menu>lambdaQuery().eq(Menu::getParentId, "0").orderByAsc(Menu::getOrderNo));
+
+        for (Menu parentMenu : parentList) {
+           this.setChildrenList(parentMenu);
         }
 
-        List<RoleMenu> roleMenuList = roleMenuService.getBaseMapper().selectList(Wrappers.<RoleMenu>lambdaQuery().eq(RoleMenu::getRoleId, account.getRoleId()));
-
-        List<MenuDto> parentList = new ArrayList<>();
-        MenuDto parent = null;
-        List<Menu> parentApiList = getBaseMapper().selectList(Wrappers.<Menu>lambdaQuery().eq(Menu::getParentId, "0").orderByAsc(Menu::getOrderNo));
-        for (Menu parentmenu : parentApiList) {
-            for (RoleMenu roleMenu : roleMenuList) {//当前用户有权限菜单ID
-                if (roleMenu.getMenuId().equals(parentmenu.getId())) {
-//                    childList = Lists.newArrayList();
-                    parent = new MenuDto();
-                    parent.setTitle(parentmenu.getName());
-                    parent.setName(parentmenu.getModule());
-                    parent.setIcon(parentmenu.getIcon());
-                    if (parentmenu.getIsJump() == 1) {
-                        parent.setJump(parentmenu.getUri());
-                    }
-                    getRecursionMenu(parent, parentmenu, roleMenuList);
-                    parentList.add(parent);
-                    break;
-                }
-            }
-        }
         return ResultDto.returnSuccessData(parentList);
+    }
+
+    @Override
+    public List<Menu> getRootMenuList() {
+        List<Menu> parentList = menuService.getBaseMapper().selectList(Wrappers.<Menu>lambdaQuery().eq(Menu::getParentId, "0").orderByAsc(Menu::getOrderNo));
+        for (Menu parentMenu : parentList) {
+            this.setChildrenList(parentMenu);
+        }
+        return parentList;
     }
 
     private void getRecursionMenu(MenuDto parent, Menu parentmenu, List<RoleMenu> roleMenuList) {
         List<Menu> childApiList = getBaseMapper().selectList(Wrappers.<Menu>lambdaQuery().eq(Menu::getParentId, parentmenu.getId()).orderByAsc(Menu::getOrderNo));
         List<MenuDto> childList = new ArrayList<>();
-        if (parentmenu.getIsJump() == 1) {
-            parent.setJump(parentmenu.getUri());
-        }
-        for (Menu childmenu : childApiList) {
-            for (RoleMenu childRoleMenu : roleMenuList) {
-                if (childRoleMenu.getMenuId().equals(childmenu.getId())) {
-                    MenuDto child = new MenuDto();
-                    child.setTitle(childmenu.getName());
-                    child.setName(childmenu.getModule());
-                    if (childmenu.getIsJump() == 1) {
-                        child.setJump(childmenu.getUri());
-                    }
-                    getRecursionMenu(child, childmenu, roleMenuList);
-                    childList.add(child);
-                    break;
-                }
-            }
-            parent.setList(childList);
-        }
+//        if (parentmenu.getIsJump() == 1) {
+//            parent.setJump(parentmenu.getUri());
+//        }
+//        for (Menu childmenu : childApiList) {
+//            for (RoleMenu childRoleMenu : roleMenuList) {
+//                if (childRoleMenu.getMenuId().equals(childmenu.getId())) {
+//                    MenuDto child = new MenuDto();
+//                    child.setTitle(childmenu.getName());
+//                    child.setName(childmenu.getModule());
+//                    if (childmenu.getIsJump() == 1) {
+//                        child.setJump(childmenu.getUri());
+//                    }
+//                    getRecursionMenu(child, childmenu, roleMenuList);
+//                    childList.add(child);
+//                    break;
+//                }
+//            }
+//            parent.setList(childList);
+//        }
     }
 
     @Override
@@ -110,7 +110,7 @@ public class MenuServiceImpl extends MpBaseServiceImpl<MenuMapper, Menu> impleme
         for (Menu parent : parentApiList) {
 //            xTreeChildList = Lists.newArrayList();
             xTreeParent = new XTreeDto();
-            xTreeParent.setName(parent.getName());
+            xTreeParent.setName(parent.getTitle());
             xTreeParent.setValue(parent.getId());
             getRecursionTree(xTreeParent, parent.getId());
             xTreeParentList.add(xTreeParent);
@@ -137,7 +137,7 @@ public class MenuServiceImpl extends MpBaseServiceImpl<MenuMapper, Menu> impleme
             List<XTreeDto> xTreeChildList = new ArrayList<>();
             for (Menu child : childApiList) {
                 XTreeDto xTreeChild = new XTreeDto();
-                xTreeChild.setName(child.getName());
+                xTreeChild.setName(child.getTitle());
                 xTreeChild.setValue(child.getId());
 //                xTreeChild.setChildren(Lists.newArrayList());
                 xTreeChildList.add(xTreeChild);
@@ -150,9 +150,8 @@ public class MenuServiceImpl extends MpBaseServiceImpl<MenuMapper, Menu> impleme
     }
 
     @Override
-    public boolean existsName(String name) {
-        Menu menu = getBaseMapper().selectOne(
-                Wrappers.<Menu>lambdaQuery().eq(Menu::getName, name));
+    public boolean existsName(String title) {
+        Menu menu = getBaseMapper().selectOne(Wrappers.<Menu>lambdaQuery().eq(Menu::getTitle, title));
         if (menu == null) {
             return false;
         }
@@ -161,24 +160,19 @@ public class MenuServiceImpl extends MpBaseServiceImpl<MenuMapper, Menu> impleme
 
     @Override
     public boolean existsUri(String uri) {
-        Menu menu = getBaseMapper().selectOne(
-                Wrappers.<Menu>lambdaQuery().eq(Menu::getUri, uri));
-        if (menu == null) {
-            return false;
-        }
+//        Menu menu = getBaseMapper().selectOne(Wrappers.<Menu>lambdaQuery().eq(Menu::getUri, uri));
+//        if (menu == null) {
+//            return false;
+//        }
         return true;
     }
 
     @Override
     public ResultDto saveEntity(Menu menu) {
         try {
-            if (existsName(menu.getName())) {
-                return ResultDto.returnFail("名称重复：" + menu.getName());
+            if (existsName(menu.getTitle())) {
+                return ResultDto.returnFail("名称重复：" + menu.getTitle());
             }
-            if (existsUri(menu.getUri())) {
-                return ResultDto.returnFail("uri重复");
-            }
-
             if (StringUtils.isBlank(menu.getId())) {
                 menu.setId(UUID.randomUUID().toString().replace("-", ""));
             }
@@ -194,16 +188,10 @@ public class MenuServiceImpl extends MpBaseServiceImpl<MenuMapper, Menu> impleme
     @Override
     public ResultDto updateEntity(Menu menu) {
         try {
-            Menu checkMenu = getBaseMapper().selectOne(Wrappers.<Menu>lambdaQuery().eq(Menu::getName, menu.getName()));
+            Menu checkMenu = getBaseMapper().selectOne(Wrappers.<Menu>lambdaQuery().eq(Menu::getTitle, menu.getTitle()));
             if (checkMenu != null) {
                 if (!menu.getId().equals(checkMenu.getId())) {
                     return ResultDto.returnFail("名称重复");
-                }
-            }
-            checkMenu = getBaseMapper().selectOne(Wrappers.<Menu>lambdaQuery().eq(Menu::getUri, menu.getUri()));
-            if (checkMenu != null) {
-                if (!menu.getId().equals(checkMenu.getId())) {
-                    return ResultDto.returnFail("uri重复");
                 }
             }
             Menu oldMenu = getById(menu.getId());
@@ -224,7 +212,6 @@ public class MenuServiceImpl extends MpBaseServiceImpl<MenuMapper, Menu> impleme
     @Override
     public ResultDto delete(String id) {
         try {
-//            Menu menu = getById(id);
             List<Menu> menuList = getBaseMapper().selectList(Wrappers.<Menu>lambdaQuery().eq(Menu::getParentId, id));
             if (menuList.size() > 0) {
                 return ResultDto.returnFail("有多个子级，不可删除");
@@ -235,7 +222,7 @@ public class MenuServiceImpl extends MpBaseServiceImpl<MenuMapper, Menu> impleme
             }
 
             removeById(id);
-//            menuAuthorityService.deleteAllByMenuId(id);
+
             return ResultDto.returnSuccess();
         } catch (Exception e) {
             log.error("删除菜单出现异常,异常信息为:{}", e.getMessage());
@@ -250,12 +237,12 @@ public class MenuServiceImpl extends MpBaseServiceImpl<MenuMapper, Menu> impleme
         String[] modules = uri.split("/");
         String menuId = null;
         for (String module : modules) {
-            Menu menu = getBaseMapper().selectOne(Wrappers.<Menu>lambdaQuery().eq(Menu::getModule, module));
-            if (menu != null) {
-                list.add(menu.getName());
-                menuId = menu.getId();
-                continue;
-            }
+//            Menu menu = getBaseMapper().selectOne(Wrappers.<Menu>lambdaQuery().eq(Menu::getModule, module));
+//            if (menu != null) {
+//                list.add(menu.getName());
+//                menuId = menu.getId();
+//                continue;
+//            }
             if (menuId != null) {
                 Authority authority = authorityService.getBaseMapper().selectOne(Wrappers.<Authority>lambdaQuery().eq(Authority::getMenuId, menuId).eq(Authority::getModule, module));
                 if (authority != null) {
@@ -264,5 +251,13 @@ public class MenuServiceImpl extends MpBaseServiceImpl<MenuMapper, Menu> impleme
             }
         }
         return ResultDto.returnSuccessData(list);
+    }
+
+    @Override
+    public PageDto<Menu> findPage(int pageNo, int pageSize) {
+        QueryWrapper<Menu> queryWrapper = new QueryWrapper<>();
+        PageDto<Menu> pageDTO = selectPage(queryWrapper, pageNo, pageSize);
+
+        return pageDTO;
     }
 }

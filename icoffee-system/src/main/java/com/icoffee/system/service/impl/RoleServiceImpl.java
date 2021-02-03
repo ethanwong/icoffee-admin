@@ -126,7 +126,7 @@ public class RoleServiceImpl extends MpBaseServiceImpl<RoleMapper, Role> impleme
         List<RoleMenu> roleMenuList = roleMenuService.getBaseMapper().selectList(Wrappers.<RoleMenu>lambdaQuery().eq(RoleMenu::getRoleId, roleId));
         for (Menu menu : menuList) {
             XTreeDto dto = new XTreeDto();
-            dto.setName(menu.getName());
+            dto.setName(menu.getTitle());
             dto.setValue(menu.getId());
             dto.setType("menu");
             for (RoleMenu roleMenu : roleMenuList) {
@@ -147,7 +147,7 @@ public class RoleServiceImpl extends MpBaseServiceImpl<RoleMapper, Role> impleme
         if (menuList.size() > 0) {
             for (Menu menu : menuList) {
                 XTreeDto dto = new XTreeDto();
-                dto.setName(menu.getName());
+                dto.setName(menu.getTitle());
                 dto.setType("menu");
                 dto.setValue(menu.getId());
                 for (RoleMenu roleMenu : roleMenuList) {

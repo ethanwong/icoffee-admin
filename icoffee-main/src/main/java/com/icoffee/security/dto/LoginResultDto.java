@@ -1,6 +1,5 @@
 package com.icoffee.security.dto;
 
-import com.icoffee.system.dto.PermissionDto;
 import lombok.Data;
 
 import java.util.Date;
@@ -18,5 +17,5 @@ public class LoginResultDto {
     private String role;
     private String token;
     private Date expireAt;
-    private List<PermissionDto> permissionList;
+    private List<RouteDto> permissionList;
 }

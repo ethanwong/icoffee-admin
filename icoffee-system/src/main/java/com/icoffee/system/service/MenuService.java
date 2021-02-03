@@ -1,6 +1,7 @@
 package com.icoffee.system.service;
 
 
+import com.icoffee.common.dto.PageDto;
 import com.icoffee.common.dto.ResultDto;
 import com.icoffee.common.service.MpBaseService;
 import com.icoffee.system.domain.Menu;
@@ -23,6 +24,12 @@ public interface MenuService extends MpBaseService<Menu> {
      * @return
      */
     ResultDto getMenu();
+
+    /**
+     * 获取列表
+     * @return
+     */
+    List<Menu> getRootMenuList();
 
     /**
      * 获取菜单树
@@ -78,4 +85,12 @@ public interface MenuService extends MpBaseService<Menu> {
      * @return
      */
     ResultDto getNameHierarchy(String uri);
+
+    /**
+     * 查询分页列表
+     * @param pageNo
+     * @param pageSize
+     * @return
+     */
+    PageDto<Menu> findPage(int pageNo, int pageSize);
 }

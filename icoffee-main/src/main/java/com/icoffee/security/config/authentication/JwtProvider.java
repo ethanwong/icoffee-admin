@@ -10,7 +10,7 @@ import com.auth0.jwt.interfaces.DecodedJWT;
 import com.auth0.jwt.interfaces.Header;
 import com.auth0.jwt.interfaces.Payload;
 import com.icoffee.common.exception.TokenAuthException;
-import com.icoffee.system.dto.PermissionDto;
+import com.icoffee.security.dto.RouteDto;
 import lombok.extern.log4j.Log4j2;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.logging.log4j.core.util.Assert;
@@ -60,7 +60,7 @@ public class JwtProvider {
      * @param permissionDtoList
      * @return
      */
-    public String createToken(String username, List<PermissionDto> permissionDtoList) throws JWTCreationException {
+    public String createToken(String username, List<RouteDto> permissionDtoList) throws JWTCreationException {
         try {
             Date expiresAt = new Date();
             //设置过期时间
@@ -81,7 +81,7 @@ public class JwtProvider {
                     .withClaim("permission", permissionDtoList);
 
             String token = tokenBuilder.sign(algorithm);
-            log.info("createToken token={}", token);
+//            log.info("createToken token={}", token);
             return token;
         } catch (JWTCreationException exception) {
             log.error("createToken error", exception);

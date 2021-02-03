@@ -4,7 +4,6 @@ import com.baomidou.mybatisplus.core.toolkit.Wrappers;
 import com.icoffee.common.dto.ResultDto;
 import com.icoffee.common.service.MpBaseServiceImpl;
 import com.icoffee.system.domain.User;
-import com.icoffee.system.dto.PermissionDto;
 import com.icoffee.system.mapper.UserMapper;
 import com.icoffee.system.service.UserService;
 import lombok.extern.log4j.Log4j2;
@@ -12,8 +11,6 @@ import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
-
-import java.util.List;
 
 /**
  * @Name UserServiceImpl
@@ -97,11 +94,6 @@ public class UserServiceImpl extends MpBaseServiceImpl<UserMapper, User> impleme
 
     @Override
     public ResultDto changeLocked(String id) throws Exception {
-        return null;
-    }
-
-    @Override
-    public List<PermissionDto> getUserPermission(String username) {
         return null;
     }
 

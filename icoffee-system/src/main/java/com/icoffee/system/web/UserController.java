@@ -27,7 +27,7 @@ public class UserController {
     @Autowired
     private UserService userService;
 
-    @AuthorizePoint(value = "", code = "", uri = "")
+    @AuthorizePoint(name = "", module = "", permission = "")
     @PostMapping(value = "")
     @ResponseBody
     @ApiOperation(value = "新增用户", notes = "新增用户")

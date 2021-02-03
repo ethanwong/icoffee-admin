@@ -14,21 +14,28 @@ import java.lang.annotation.*;
 @Documented
 public @interface AuthorizePoint {
     /**
-     * 模块名称
+     * 资源名称
      *
      * @return
      */
-    String value();
+    String name();
 
     /**
-     * 模块编码
+     * 归属模块
      *
      * @return
      */
-    String code() default "";
+    String module();
 
     /**
-     * URI
+     * 权限标识
+     *
+     * @return
+     */
+    String permission();
+
+    /**
+     * 资源的URI
      *
      * @return
      */

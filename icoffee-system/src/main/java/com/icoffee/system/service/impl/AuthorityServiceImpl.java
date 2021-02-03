@@ -83,8 +83,8 @@ public class AuthorityServiceImpl extends MpBaseServiceImpl<AuthorityMapper, Aut
             }
 
             Menu menu = menuService.getById(menuId);
-            String uri = menu.getUri();
-            String name = menu.getName();
+            String uri = "";
+            String name = menu.getTitle();
             String repeat = "";
 
             String oneKey[] = {"POST", "DELETE", "PUT", "GET", "GET"};

@@ -24,7 +24,7 @@ public class PageDto<T> implements Serializable {
     /**
      * 当前页数
      */
-    private Integer page = 1;
+    private Integer pageNo = 1;
 
     /**
      * 每页记录数
@@ -44,5 +44,5 @@ public class PageDto<T> implements Serializable {
     /**
      * 分页数据列表
      */
-    private List<T> data;
+    private List<T> items;
 }

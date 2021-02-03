@@ -78,8 +78,8 @@ public class SpringSecurityConfig extends WebSecurityConfigurerAdapter {
                 .authenticationEntryPoint(new JwtAuthenticationEntryPoint())
                 .and()
                 .authorizeRequests()
-                .antMatchers("/security/login", "/security/captcha").permitAll()
-                .antMatchers("/swagger-ui/**", "/v3/api-docs", "/swagger-resources/**").permitAll()
+                .antMatchers("/api/security/login", "/api/security/captcha").permitAll()
+                .antMatchers("/swagger-ui/**", "/v3/api-docs", "/swagger-resources/**","/").permitAll()
                 .anyRequest().authenticated()
         ;
     }
