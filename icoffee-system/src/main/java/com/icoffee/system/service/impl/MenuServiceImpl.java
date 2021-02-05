@@ -6,11 +6,9 @@ import com.baomidou.mybatisplus.core.toolkit.Wrappers;
 import com.icoffee.common.dto.PageDto;
 import com.icoffee.common.dto.ResultDto;
 import com.icoffee.common.service.MpBaseServiceImpl;
-import com.icoffee.system.domain.Authority;
 import com.icoffee.system.domain.Menu;
 import com.icoffee.system.domain.RoleMenu;
-import com.icoffee.system.dto.MenuDto;
-import com.icoffee.system.dto.XTreeDto;
+import com.icoffee.system.dto.ElTreeDto;
 import com.icoffee.system.mapper.MenuMapper;
 import com.icoffee.system.service.AuthorityService;
 import com.icoffee.system.service.MenuService;
@@ -87,78 +85,37 @@ public class MenuServiceImpl extends MpBaseServiceImpl<MenuMapper, Menu> impleme
         return parentList;
     }
 
-    private void getRecursionMenu(MenuDto parent, Menu parentmenu, List<RoleMenu> roleMenuList) {
-        List<Menu> childApiList = getBaseMapper().selectList(Wrappers.<Menu>lambdaQuery().eq(Menu::getParentId, parentmenu.getId()).orderByAsc(Menu::getOrderNo));
-        List<MenuDto> childList = new ArrayList<>();
-//        if (parentmenu.getIsJump() == 1) {
-//            parent.setJump(parentmenu.getUri());
-//        }
-//        for (Menu childmenu : childApiList) {
-//            for (RoleMenu childRoleMenu : roleMenuList) {
-//                if (childRoleMenu.getMenuId().equals(childmenu.getId())) {
-//                    MenuDto child = new MenuDto();
-//                    child.setTitle(childmenu.getName());
-//                    child.setName(childmenu.getModule());
-//                    if (childmenu.getIsJump() == 1) {
-//                        child.setJump(childmenu.getUri());
-//                    }
-//                    getRecursionMenu(child, childmenu, roleMenuList);
-//                    childList.add(child);
-//                    break;
-//                }
-//            }
-//            parent.setList(childList);
-//        }
-    }
-
     @Override
-    public List<XTreeDto> getTree() {
-        List<XTreeDto> xTreeParentList = new ArrayList<>();
-//        List<XTreeDto> xTreeChildList = null;
-        XTreeDto xTreeParent = null;
-//        XTreeDto xTreeChild = null;
+    public ResultDto getTree() {
 
-        List<Menu> parentApiList = getBaseMapper().selectList(Wrappers.<Menu>lambdaQuery().eq(Menu::getParentId, "0").orderByAsc(Menu::getOrderNo));
-        for (Menu parent : parentApiList) {
-//            xTreeChildList = Lists.newArrayList();
-            xTreeParent = new XTreeDto();
-            xTreeParent.setName(parent.getTitle());
-            xTreeParent.setValue(parent.getId());
-            getRecursionTree(xTreeParent, parent.getId());
-            xTreeParentList.add(xTreeParent);
-//            List<Menu> childApiList = getBaseMapper().selectList(Wrappers.<Menu>lambdaQuery().eq(Menu::getParentId,parent.getId()).orderByAsc(Menu::getOrderNo));
-//            if(childApiList.size() == 0){
-//                xTreeParent.setChildren(Lists.newArrayList());
-//            }
-//            for (Menu child : childApiList) {
-//                xTreeChild = new XTreeDto();
-//                xTreeChild.setName(child.getName());
-//                xTreeChild.setValue(child.getId());
-////                xTreeChild.setChildren(Lists.newArrayList());
-//                xTreeChildList.add(xTreeChild);
-//            }
-//            xTreeParent.setChildren(xTreeChildList);
-//            xTreeParentList.add(xTreeParent);
+        List<ElTreeDto> elTreeDtoList = new ArrayList<>();
+
+        QueryWrapper<Menu> queryWrapper = new QueryWrapper<>();
+        List<Menu> rootMenuList = menuService.getRootMenuList(queryWrapper);
+        for (Menu menu : rootMenuList) {
+            ElTreeDto elTreeDto = new ElTreeDto();
+            this.menuToElTree(menu, elTreeDto);
+            elTreeDtoList.add(elTreeDto);
         }
-        return xTreeParentList;
+
+        return ResultDto.returnSuccessData(elTreeDtoList);
     }
 
-    private void getRecursionTree(XTreeDto xTreeParent, String parentId) {
-        List<Menu> childApiList = getBaseMapper().selectList(Wrappers.<Menu>lambdaQuery().eq(Menu::getParentId, parentId).orderByAsc(Menu::getOrderNo));
-        if (childApiList.size() > 0) {
-            List<XTreeDto> xTreeChildList = new ArrayList<>();
-            for (Menu child : childApiList) {
-                XTreeDto xTreeChild = new XTreeDto();
-                xTreeChild.setName(child.getTitle());
-                xTreeChild.setValue(child.getId());
-//                xTreeChild.setChildren(Lists.newArrayList());
-                xTreeChildList.add(xTreeChild);
-                getRecursionTree(xTreeChild, child.getId());
-                xTreeParent.setChildren(xTreeChildList);
+    public void menuToElTree(Menu menu, ElTreeDto elTreeDto) {
+        List<ElTreeDto> elTreeDtoChildrenList = new ArrayList<>();
+
+        List<Menu> children = menu.getChildren();
+        if (children != null && !children.isEmpty()) {
+            for (Menu child : children) {
+                ElTreeDto subElTreeDto = new ElTreeDto();
+                menuToElTree(child, subElTreeDto);
+                elTreeDtoChildrenList.add(subElTreeDto);
             }
-        } else {
-            xTreeParent.setChildren(null);
         }
+        elTreeDto.setId(menu.getId());
+        elTreeDto.setName(menu.getTitle());
+        elTreeDto.setModule(menu.getModuleName());
+        elTreeDto.setChildren(elTreeDtoChildrenList);
     }
 
     private boolean existsName(String title, String sourceId) {
@@ -215,15 +172,6 @@ public class MenuServiceImpl extends MpBaseServiceImpl<MenuMapper, Menu> impleme
             }
         }
         return false;
-    }
-
-    @Override
-    public boolean existsUri(String uri) {
-//        Menu menu = getBaseMapper().selectOne(Wrappers.<Menu>lambdaQuery().eq(Menu::getUri, uri));
-//        if (menu == null) {
-//            return false;
-//        }
-        return true;
     }
 
     @Override
@@ -291,9 +239,7 @@ public class MenuServiceImpl extends MpBaseServiceImpl<MenuMapper, Menu> impleme
             if (roleMenuList.size() > 0) {
                 return ResultDto.returnFail("失败：已被角色关联");
             }
-
             removeById(id);
-
             return ResultDto.returnSuccess();
         } catch (Exception e) {
             log.error("删除菜单出现异常,异常信息为:{}", e.getMessage());
@@ -302,33 +248,10 @@ public class MenuServiceImpl extends MpBaseServiceImpl<MenuMapper, Menu> impleme
         }
     }
 
-    @Override
-    public ResultDto getNameHierarchy(String uri) {
-        List<String> list = new ArrayList<>();
-        String[] modules = uri.split("/");
-        String menuId = null;
-        for (String module : modules) {
-//            Menu menu = getBaseMapper().selectOne(Wrappers.<Menu>lambdaQuery().eq(Menu::getModule, module));
-//            if (menu != null) {
-//                list.add(menu.getName());
-//                menuId = menu.getId();
-//                continue;
-//            }
-            if (menuId != null) {
-                Authority authority = authorityService.getBaseMapper().selectOne(Wrappers.<Authority>lambdaQuery().eq(Authority::getMenuId, menuId).eq(Authority::getModule, module));
-                if (authority != null) {
-                    list.add(authority.getName());
-                }
-            }
-        }
-        return ResultDto.returnSuccessData(list);
-    }
 
     @Override
     public PageDto<Menu> findPage(int pageNo, int pageSize) {
         QueryWrapper<Menu> queryWrapper = new QueryWrapper<>();
-        PageDto<Menu> pageDTO = selectPage(queryWrapper, pageNo, pageSize);
-
-        return pageDTO;
+        return selectPage(queryWrapper, pageNo, pageSize);
     }
 }

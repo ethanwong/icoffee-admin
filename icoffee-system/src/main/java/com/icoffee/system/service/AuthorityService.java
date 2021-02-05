@@ -16,34 +16,9 @@ import java.util.List;
 public interface AuthorityService extends MpBaseService<Authority> {
 
     /**
-     * 保存
-     *
-     * @param authority 实体
+     * 批量保存授权信息
+     * @param authorityList
      * @return
      */
-    ResultDto saveEntity(Authority authority);
-
-    /**
-     * 修改
-     *
-     * @param authority 实体
-     * @return
-     */
-    ResultDto updateEntity(Authority authority);
-
-    /**
-     * 批量添加
-     *
-     * @param menuId
-     * @return
-     */
-    ResultDto batchSave(String menuId);
-
-    /**
-     * 批量删除
-     *
-     * @param ids
-     * @return
-     */
-    ResultDto batchDelete(List<String> ids);
+    ResultDto batchSaveAuthorityList(List<Authority> authorityList);
 }

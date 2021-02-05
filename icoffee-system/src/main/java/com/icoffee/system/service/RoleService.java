@@ -4,7 +4,7 @@ package com.icoffee.system.service;
 import com.icoffee.common.dto.ResultDto;
 import com.icoffee.common.service.MpBaseService;
 import com.icoffee.system.domain.Role;
-import com.icoffee.system.dto.XTreeDto;
+import com.icoffee.system.dto.ElTreeDto;
 
 import java.util.List;
 
@@ -46,7 +46,7 @@ public interface RoleService extends MpBaseService<Role> {
      * @param roleId
      * @return
      */
-    List<XTreeDto> getRoleAuth(String roleId);
+    List<ElTreeDto> getRoleAuth(String roleId);
 
     /**
      * 设置角色权限
@@ -64,5 +64,5 @@ public interface RoleService extends MpBaseService<Role> {
      * @param roleId 角色Id
      * @return List
      */
-    List<XTreeDto> findAuthorityByRoleId(String roleId);
+    List<ElTreeDto> findAuthorityByRoleId(String roleId);
 }

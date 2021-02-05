@@ -45,7 +45,7 @@ public class UserDetailsServiceImpl implements UserDetailsService {
         } else {
             // 用户角色也应在数据库中获取
             List<SimpleGrantedAuthority> authorities = new ArrayList<>();
-            authorities.add(new SimpleGrantedAuthority("test:admin"));
+            authorities.add(new SimpleGrantedAuthority("auth:admin"));
 //            authorities.add(new SimpleGrantedAuthority("test:coffee"));
 
             String password = userDO.getPassword();

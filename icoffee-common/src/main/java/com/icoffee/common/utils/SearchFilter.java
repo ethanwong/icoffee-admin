@@ -31,7 +31,7 @@ public class SearchFilter {
         for (Map.Entry<String, Object> entry : filterParamMap.entrySet()) {
             String key = entry.getKey();
             String value = (String) entry.getValue();
-            String[] names = StringUtils.split(key, ".");
+            String[] names = StringUtils.split(key, "_");
             String filedName = names[1];
             Operator operator = Operator.valueOf(names[0]);
             // 如果value值为空,则忽略此filter.

@@ -6,7 +6,6 @@ import com.icoffee.common.dto.PageDto;
 import com.icoffee.common.dto.ResultDto;
 import com.icoffee.common.service.MpBaseService;
 import com.icoffee.system.domain.Menu;
-import com.icoffee.system.dto.XTreeDto;
 
 import java.util.List;
 
@@ -37,16 +36,8 @@ public interface MenuService extends MpBaseService<Menu> {
      *
      * @return
      */
-    List<XTreeDto> getTree();
+    ResultDto getTree();
 
-
-    /**
-     * 判断uri唯一
-     *
-     * @param uri
-     * @return
-     */
-    boolean existsUri(String uri);
 
     /**
      * 保存
@@ -72,13 +63,6 @@ public interface MenuService extends MpBaseService<Menu> {
      */
     ResultDto delete(String id);
 
-    /**
-     * 获取名称层级
-     *
-     * @param uri
-     * @return
-     */
-    ResultDto getNameHierarchy(String uri);
 
     /**
      * 查询分页列表

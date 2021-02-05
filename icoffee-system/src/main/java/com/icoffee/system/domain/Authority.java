@@ -25,11 +25,30 @@ import java.io.Serializable;
 @AllArgsConstructor
 @EqualsAndHashCode(callSuper = false)
 public class Authority extends BaseDomain implements Serializable {
-
+    /**
+     * 授权名称
+     */
     private String name;
+    /**
+     * 资源URI
+     */
     private String uri;
+    /**
+     * 资源URI的方法
+     */
     private String method;
+    /**
+     * 授权标签
+     */
+    private String permission;
+    /**
+     * 描述信息
+     */
+    private String description;
+    /**
+     * 归属模块
+     */
     private String module;
-    private String menuId;
+
 
 }

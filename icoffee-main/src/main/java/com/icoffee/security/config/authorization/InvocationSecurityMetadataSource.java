@@ -31,14 +31,14 @@ public class InvocationSecurityMetadataSource implements FilterInvocationSecurit
         if (resourceMap == null) {
             resourceMap = new HashMap<>();
             Collection<ConfigAttribute> configAttributes = new ArrayList<>();
-            ConfigAttribute configAttribute = new SecurityConfig("test:admin");
+            ConfigAttribute configAttribute = new SecurityConfig("auth:admin");
             configAttributes.add(configAttribute);
-            resourceMap.put("/api/test/admin#GET", configAttributes);
+            resourceMap.put("/api/auth/admin#GET", configAttributes);
 
             Collection<ConfigAttribute> configAttributes2 = new ArrayList<>();
-            ConfigAttribute configAttribute2 = new SecurityConfig("test:coffee");
+            ConfigAttribute configAttribute2 = new SecurityConfig("auth:coffee");
             configAttributes2.add(configAttribute2);
-            resourceMap.put("/api/test/coffee#GET", configAttributes2);
+            resourceMap.put("/api/auth/coffee#GET", configAttributes2);
         }
 
     }

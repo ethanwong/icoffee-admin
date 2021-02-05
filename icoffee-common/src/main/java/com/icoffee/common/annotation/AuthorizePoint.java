@@ -27,17 +27,4 @@ public @interface AuthorizePoint {
      */
     String module();
 
-    /**
-     * 权限标识
-     *
-     * @return
-     */
-    String permission();
-
-    /**
-     * 资源的URI
-     *
-     * @return
-     */
-    String uri() default "";
 }

@@ -6,7 +6,7 @@ import com.baomidou.mybatisplus.core.toolkit.Wrappers;
 import com.icoffee.common.dto.ResultDto;
 import com.icoffee.common.service.MpBaseServiceImpl;
 import com.icoffee.system.domain.*;
-import com.icoffee.system.dto.XTreeDto;
+import com.icoffee.system.dto.ElTreeDto;
 import com.icoffee.system.mapper.RoleMapper;
 import com.icoffee.system.service.*;
 import lombok.extern.log4j.Log4j2;
@@ -119,68 +119,68 @@ public class RoleServiceImpl extends MpBaseServiceImpl<RoleMapper, Role> impleme
     }
 
     @Override
-    public List<XTreeDto> getRoleAuth(String roleId) {
-        List<XTreeDto> dtoList = new ArrayList<>();
-        List<Menu> menuList = menuService.getBaseMapper().selectList(Wrappers.<Menu>lambdaQuery().eq(Menu::getParentId, "0").orderByAsc(Menu::getOrderNo));
-        List<RoleAuthority> roleAuthorityList = roleAuthorityService.getBaseMapper().selectList(Wrappers.<RoleAuthority>lambdaQuery().eq(RoleAuthority::getRoleId, roleId));
-        List<RoleMenu> roleMenuList = roleMenuService.getBaseMapper().selectList(Wrappers.<RoleMenu>lambdaQuery().eq(RoleMenu::getRoleId, roleId));
-        for (Menu menu : menuList) {
-            XTreeDto dto = new XTreeDto();
-            dto.setName(menu.getTitle());
-            dto.setValue(menu.getId());
-            dto.setType("menu");
-            for (RoleMenu roleMenu : roleMenuList) {
-                if (menu.getId().equals(roleMenu.getMenuId())) {
-                    dto.setChecked(true);
-                    roleMenuList.remove(roleMenu);
-                    break;
-                }
-            }
-            getRecursionMenu(dto, roleMenuList, roleAuthorityList);
-            dtoList.add(dto);
-        }
+    public List<ElTreeDto> getRoleAuth(String roleId) {
+        List<ElTreeDto> dtoList = new ArrayList<>();
+//        List<Menu> menuList = menuService.getBaseMapper().selectList(Wrappers.<Menu>lambdaQuery().eq(Menu::getParentId, "0").orderByAsc(Menu::getOrderNo));
+//        List<RoleAuthority> roleAuthorityList = roleAuthorityService.getBaseMapper().selectList(Wrappers.<RoleAuthority>lambdaQuery().eq(RoleAuthority::getRoleId, roleId));
+//        List<RoleMenu> roleMenuList = roleMenuService.getBaseMapper().selectList(Wrappers.<RoleMenu>lambdaQuery().eq(RoleMenu::getRoleId, roleId));
+//        for (Menu menu : menuList) {
+//            ElTreeDto dto = new ElTreeDto();
+//            dto.setName(menu.getTitle());
+//            dto.setValue(menu.getId());
+//            dto.setType("menu");
+//            for (RoleMenu roleMenu : roleMenuList) {
+//                if (menu.getId().equals(roleMenu.getMenuId())) {
+//                    dto.setChecked(true);
+//                    roleMenuList.remove(roleMenu);
+//                    break;
+//                }
+//            }
+//            getRecursionMenu(dto, roleMenuList, roleAuthorityList);
+//            dtoList.add(dto);
+//        }
         return dtoList;
     }
 
-    private void getRecursionMenu(XTreeDto roleAuthDto, List<RoleMenu> roleMenuList, List<RoleAuthority> roleAuthorityList) {
-        List<Menu> menuList = menuService.getBaseMapper().selectList(Wrappers.<Menu>lambdaQuery().eq(Menu::getParentId, roleAuthDto.getValue()).orderByAsc(Menu::getOrderNo));
-        if (menuList.size() > 0) {
-            for (Menu menu : menuList) {
-                XTreeDto dto = new XTreeDto();
-                dto.setName(menu.getTitle());
-                dto.setType("menu");
-                dto.setValue(menu.getId());
-                for (RoleMenu roleMenu : roleMenuList) {
-                    if (menu.getId().equals(roleMenu.getMenuId())) {
-                        dto.setChecked(true);
-                        roleMenuList.remove(roleMenu);
-                        break;
-                    }
-                }
-                getRecursionMenu(dto, roleMenuList, roleAuthorityList);
-                roleAuthDto.getChildren().add(dto);
-            }
-        } else {
-            List<Authority> authorityList = authorityService.getBaseMapper().selectList(Wrappers.<Authority>lambdaQuery().eq(Authority::getMenuId, roleAuthDto.getValue()));
-            for (Authority authority : authorityList) {
-                XTreeDto authDto = new XTreeDto();
-                authDto.setName(authority.getName());
-                authDto.setType("auth");
-                authDto.setValue(authority.getId());
-                for (RoleAuthority roleAuthority : roleAuthorityList) {
-                    if (authority.getId().equals(roleAuthority.getAuthorityId())) {
-                        authDto.setChecked(true);
-                        roleAuthorityList.remove(roleAuthority);
-                        break;
-                    }
-                }
-                roleAuthDto.getChildren().add(authDto);
-            }
-        }
+    private void getRecursionMenu(ElTreeDto roleAuthDto, List<RoleMenu> roleMenuList, List<RoleAuthority> roleAuthorityList) {
+//        List<Menu> menuList = menuService.getBaseMapper().selectList(Wrappers.<Menu>lambdaQuery().eq(Menu::getParentId, roleAuthDto.getValue()).orderByAsc(Menu::getOrderNo));
+//        if (menuList.size() > 0) {
+//            for (Menu menu : menuList) {
+//                ElTreeDto dto = new ElTreeDto();
+//                dto.setName(menu.getTitle());
+//                dto.setType("menu");
+//                dto.setValue(menu.getId());
+//                for (RoleMenu roleMenu : roleMenuList) {
+//                    if (menu.getId().equals(roleMenu.getMenuId())) {
+//                        dto.setChecked(true);
+//                        roleMenuList.remove(roleMenu);
+//                        break;
+//                    }
+//                }
+//                getRecursionMenu(dto, roleMenuList, roleAuthorityList);
+//                roleAuthDto.getChildren().add(dto);
+//            }
+//        } else {
+//            List<Authority> authorityList = authorityService.getBaseMapper().selectList(Wrappers.<Authority>lambdaQuery().eq(Authority::getMenuId, roleAuthDto.getValue()));
+//            for (Authority authority : authorityList) {
+//                XTreeDto authDto = new XTreeDto();
+//                authDto.setName(authority.getName());
+//                authDto.setType("auth");
+//                authDto.setValue(authority.getId());
+//                for (RoleAuthority roleAuthority : roleAuthorityList) {
+//                    if (authority.getId().equals(roleAuthority.getAuthorityId())) {
+//                        authDto.setChecked(true);
+//                        roleAuthorityList.remove(roleAuthority);
+//                        break;
+//                    }
+//                }
+//                roleAuthDto.getChildren().add(authDto);
+//            }
+//        }
     }
 
     @Override
-    public List<XTreeDto> findAuthorityByRoleId(String roleId) {
+    public List<ElTreeDto> findAuthorityByRoleId(String roleId) {
         return null;
     }
 }
