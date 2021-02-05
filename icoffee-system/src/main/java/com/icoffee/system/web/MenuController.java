@@ -1,8 +1,10 @@
 package com.icoffee.system.web;
 
 
+import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.icoffee.common.dto.PageDto;
 import com.icoffee.common.dto.ResultDto;
+import com.icoffee.common.utils.SearchFilter;
 import com.icoffee.system.domain.Menu;
 import com.icoffee.system.dto.XTreeDto;
 import com.icoffee.system.service.MenuService;
@@ -63,8 +65,9 @@ public class MenuController {
     @ApiOperation(value = "获取列表", notes = "")
     @GetMapping(value = "/list")
     @ResponseBody
-    public ResultDto getMenu() {
-        return menuService.getMenu();
+    public ResultDto getMenuList(HttpServletRequest request) {
+        QueryWrapper<Menu> queryWrapper = SearchFilter.buildByHttpRequestList(request);
+        return ResultDto.returnSuccessData(menuService.getRootMenuList(queryWrapper));
     }
 
     @ApiOperation(value = "根据ID获取", notes = "")

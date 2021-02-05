@@ -18,15 +18,61 @@ import java.util.Map;
 @Data
 @AllArgsConstructor
 public class RouteDto {
+
+    /**
+     * @param name      名称
+     * @param path      路径
+     * @param component 组件
+     * @param meta      META
+     * @param children  子路由
+     */
+    public RouteDto(String name, String path, String component, Map<String, Object> meta, List<RouteDto> children,Boolean hidden) {
+        this.name = name;
+        this.path = path;
+        this.component = component;
+        this.meta = meta;
+        this.children = children;
+        this.hidden = hidden;
+
+    }
+
+    /**
+     * 名称
+     */
     @JsonInclude(JsonInclude.Include.NON_NULL)
+
     private String name;
+    /**
+     * 隐藏
+     */
+    @JsonInclude(JsonInclude.Include.NON_NULL)
+    private Boolean hidden;
+
+    /**
+     * 路径
+     */
     private String path;
+    /**
+     * 组件
+     */
     private String component;
+    /**
+     * 重定向组件路径
+     */
     @JsonInclude(JsonInclude.Include.NON_NULL)
     private String redirect;
-    private Map<String,Object> meta = new HashMap<>();
+    /**
+     * meta信息
+     */
+    private Map<String, Object> meta = new HashMap<>();
+    /**
+     * 子级路由
+     */
     @JsonInclude(JsonInclude.Include.NON_NULL)
     private List<RouteDto> children = new ArrayList<>();
+    /**
+     * 角色
+     */
     @JsonInclude(JsonInclude.Include.NON_NULL)
     private List<String> roles = new ArrayList<>();
 

@@ -1,6 +1,7 @@
 package com.icoffee.system.service;
 
 
+import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.icoffee.common.dto.PageDto;
 import com.icoffee.common.dto.ResultDto;
 import com.icoffee.common.service.MpBaseService;
@@ -29,7 +30,7 @@ public interface MenuService extends MpBaseService<Menu> {
      * 获取列表
      * @return
      */
-    List<Menu> getRootMenuList();
+    List<Menu> getRootMenuList(QueryWrapper queryWrapper);
 
     /**
      * 获取菜单树
@@ -38,13 +39,6 @@ public interface MenuService extends MpBaseService<Menu> {
      */
     List<XTreeDto> getTree();
 
-    /**
-     * 判断名称唯一
-     *
-     * @param name
-     * @return
-     */
-    boolean existsName(String name);
 
     /**
      * 判断uri唯一

@@ -1,6 +1,7 @@
 package com.icoffee.security.web;
 
 import cn.hutool.core.date.DateUtil;
+import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.icoffee.common.dto.ResultDto;
 import com.icoffee.common.utils.SecurityUtils;
 import com.icoffee.security.config.authentication.JwtProvider;
@@ -182,92 +183,51 @@ public class SecurityController {
         userInfoDto.setUsername(currentUsername);
         userInfoDto.getRoles().add("admin");
         userInfoDto.setAvatar("");
-//        userInfoDto.setRoutes(genRoutes());
         userInfoDto.setRoutes(genUserRoutes());
         return ResultDto.returnSuccessData(userInfoDto);
     }
 
+    /**
+     * 设置子级路由
+     *
+     * @param child
+     * @param children
+     */
     private void setChildrenRoute(Menu child, List<RouteDto> children) {
         Map<String, Object> childMeta = new HashMap<>();
         childMeta.put("title", child.getTitle());
         childMeta.put("icon", child.getIcon());
-        RouteDto childRoute = new RouteDto(child.getModuleName(), child.getRoutePath(), child.getComponentPath(), null, childMeta, null, null);
-        children.add(childRoute);
-
+        List<RouteDto> subChildren = new ArrayList<>();
         if (child.getChildren() != null && !child.getChildren().isEmpty()) {
-            List<RouteDto> subChildren = new ArrayList<>();
             for (Menu sub : child.getChildren()) {
                 setChildrenRoute(sub, subChildren);
             }
         }
-
+        children.add(new RouteDto(child.getModuleName(), child.getRoutePath(), child.getComponentPath(), childMeta, subChildren,child.getHidden()));
     }
 
+    /**
+     * 获取用户的路由信息
+     *
+     * @return
+     */
     private List<RouteDto> genUserRoutes() {
         List<RouteDto> routes = new ArrayList<>();
-        List<Menu> list = menuService.getRootMenuList();
-        for (Menu menu : list) {
-
+        //跟级菜单
+        QueryWrapper<Menu> queryWrapper = new QueryWrapper<>();
+        List<Menu> rootMenuList = menuService.getRootMenuList(queryWrapper);
+        for (Menu rootMenu : rootMenuList) {
             Map<String, Object> meta = new HashMap<>();
-            meta.put("title", menu.getTitle());
-            meta.put("icon", menu.getIcon());
+            meta.put("title", rootMenu.getTitle());
+            meta.put("icon", rootMenu.getIcon());
 
-
+            //子级路由
             List<RouteDto> children = new ArrayList<>();
-
-            for (Menu child : menu.getChildren()) {
+            for (Menu child : rootMenu.getChildren()) {
                 setChildrenRoute(child, children);
             }
-
-            RouteDto routesDto = new RouteDto(menu.getModuleName(), menu.getRoutePath(), menu.getComponentPath(), null, meta, children, null);
-            routes.add(routesDto);
+            routes.add(new RouteDto(rootMenu.getModuleName(), rootMenu.getRoutePath(), rootMenu.getComponentPath(), meta, children,rootMenu.getHidden()));
         }
-
-        return routes;
-    }
-
-    private List<RouteDto> genRoutes() {
-        List<RouteDto> routes = new ArrayList<>();
-
-        Map<String, Object> meta = new HashMap<>();
-        meta.put("title", "系统管理");
-        meta.put("icon", "lock");
-
-        List<String> roles = new ArrayList<>();
-        roles.add("admin");
-        meta.put("roles", roles);
-
-
-        List<RouteDto> children = new ArrayList<>();
-
-        //用户管理
-        Map<String, Object> userMeta = new HashMap<>();
-        userMeta.put("title", "用户管理");
-        userMeta.put("icon", "user");
-//        userMeta.put("affix", false);
-        RouteDto user = new RouteDto("user", "user", "system/user", null, userMeta, null, null);
-        children.add(user);
-        //角色管理
-        Map<String, Object> roleMeta = new HashMap<>();
-        roleMeta.put("title", "角色管理");
-        roleMeta.put("icon", "peoples");
-//        roleMeta.put("affix", false);
-        RouteDto role = new RouteDto("role", "role", "system/role", null, roleMeta, null, null);
-        children.add(role);
-
-        //菜单管理
-        Map<String, Object> menuMeta = new HashMap<>();
-        menuMeta.put("title", "菜单管理");
-        menuMeta.put("icon", "tree-table");
-//        menuMeta.put("affix", false);
-        RouteDto menu = new RouteDto("menu", "menu", "system/menu", null, menuMeta, null, null);
-        children.add(menu);
-
-
-        //系统管理
-        RouteDto routesDto = new RouteDto("system", "/system", "Layout", null, meta, children, null);
-
-        routes.add(routesDto);
 
         return routes;
     }

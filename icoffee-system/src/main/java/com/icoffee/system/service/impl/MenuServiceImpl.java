@@ -43,10 +43,18 @@ public class MenuServiceImpl extends MpBaseServiceImpl<MenuMapper, Menu> impleme
     @Autowired
     private MenuService menuService;
 
+    /**
+     * 设置子菜单
+     *
+     * @param parentMenu
+     */
     private void setChildrenList(Menu parentMenu) {
         List<Menu> childrenList = getBaseMapper().selectList(Wrappers.<Menu>lambdaQuery().eq(Menu::getParentId, parentMenu.getId()).orderByAsc(Menu::getOrderNo));
+
+        Menu sampleParentMenu = parentMenu.clone();
         if (childrenList != null && !childrenList.isEmpty()) {
             for (Menu child : childrenList) {
+                child.setParent(sampleParentMenu);
                 setChildrenList(child);
             }
             parentMenu.setChildren(childrenList);
@@ -60,16 +68,20 @@ public class MenuServiceImpl extends MpBaseServiceImpl<MenuMapper, Menu> impleme
         List<Menu> parentList = menuService.getBaseMapper().selectList(Wrappers.<Menu>lambdaQuery().eq(Menu::getParentId, "0").orderByAsc(Menu::getOrderNo));
 
         for (Menu parentMenu : parentList) {
-           this.setChildrenList(parentMenu);
+            this.setChildrenList(parentMenu);
         }
 
         return ResultDto.returnSuccessData(parentList);
     }
 
     @Override
-    public List<Menu> getRootMenuList() {
-        List<Menu> parentList = menuService.getBaseMapper().selectList(Wrappers.<Menu>lambdaQuery().eq(Menu::getParentId, "0").orderByAsc(Menu::getOrderNo));
+    public List<Menu> getRootMenuList(QueryWrapper queryWrapper) {
+        //获取跟级菜单
+        queryWrapper.eq("parent_id", "0");
+        queryWrapper.orderByAsc("order_no");
+        List<Menu> parentList = menuService.getBaseMapper().selectList(queryWrapper);
         for (Menu parentMenu : parentList) {
+            //获取子级菜单
             this.setChildrenList(parentMenu);
         }
         return parentList;
@@ -149,13 +161,60 @@ public class MenuServiceImpl extends MpBaseServiceImpl<MenuMapper, Menu> impleme
         }
     }
 
-    @Override
-    public boolean existsName(String title) {
+    private boolean existsName(String title, String sourceId) {
         Menu menu = getBaseMapper().selectOne(Wrappers.<Menu>lambdaQuery().eq(Menu::getTitle, title));
         if (menu == null) {
             return false;
+        } else {
+            if (StringUtils.isNotBlank(sourceId)) {
+                //修改
+                if (!sourceId.equals(menu.getId())) {
+                    return true;
+                }
+            } else {
+                //添加
+                return true;
+            }
         }
-        return true;
+        return false;
+    }
+
+
+    private boolean existsRoutePath(String routePath, String sourceId) {
+        Menu menu = getBaseMapper().selectOne(Wrappers.<Menu>lambdaQuery().eq(Menu::getRoutePath, routePath));
+
+        if (menu == null) {
+            return false;
+        } else {
+            if (StringUtils.isNotBlank(sourceId)) {
+                //修改
+                if (!sourceId.equals(menu.getId())) {
+                    return true;
+                }
+            } else {
+                //添加
+                return true;
+            }
+        }
+        return false;
+    }
+
+    private boolean existsModuleName(String moduleName, String sourceId) {
+        Menu menu = getBaseMapper().selectOne(Wrappers.<Menu>lambdaQuery().eq(Menu::getModuleName, moduleName));
+        if (menu == null) {
+            return false;
+        } else {
+            if (StringUtils.isNotBlank(sourceId)) {
+                //修改
+                if (!sourceId.equals(menu.getId())) {
+                    return true;
+                }
+            } else {
+                //添加
+                return true;
+            }
+        }
+        return false;
     }
 
     @Override
@@ -170,9 +229,17 @@ public class MenuServiceImpl extends MpBaseServiceImpl<MenuMapper, Menu> impleme
     @Override
     public ResultDto saveEntity(Menu menu) {
         try {
-            if (existsName(menu.getTitle())) {
+            if (existsName(menu.getTitle(), null)) {
                 return ResultDto.returnFail("名称重复：" + menu.getTitle());
             }
+            if (existsModuleName(menu.getModuleName(), null)) {
+                return ResultDto.returnFail("模块名称重复：" + menu.getModuleName());
+            }
+
+            if (existsRoutePath(menu.getRoutePath(), null)) {
+                return ResultDto.returnFail("路由地址重复：" + menu.getRoutePath());
+            }
+
             if (StringUtils.isBlank(menu.getId())) {
                 menu.setId(UUID.randomUUID().toString().replace("-", ""));
             }
@@ -185,19 +252,23 @@ public class MenuServiceImpl extends MpBaseServiceImpl<MenuMapper, Menu> impleme
         }
     }
 
+
     @Override
     public ResultDto updateEntity(Menu menu) {
         try {
-            Menu checkMenu = getBaseMapper().selectOne(Wrappers.<Menu>lambdaQuery().eq(Menu::getTitle, menu.getTitle()));
-            if (checkMenu != null) {
-                if (!menu.getId().equals(checkMenu.getId())) {
-                    return ResultDto.returnFail("名称重复");
-                }
+            if (existsName(menu.getTitle(), menu.getId())) {
+                return ResultDto.returnFail("名称重复：" + menu.getTitle());
             }
+
+            if (existsModuleName(menu.getModuleName(), menu.getId())) {
+                return ResultDto.returnFail("模块名称重复：" + menu.getModuleName());
+            }
+
+            if (existsRoutePath(menu.getRoutePath(), menu.getId())) {
+                return ResultDto.returnFail("路由地址重复：" + menu.getRoutePath());
+            }
+
             Menu oldMenu = getById(menu.getId());
-            if (!oldMenu.getParentId().equals("0")) {
-                menu.setParentId(oldMenu.getParentId());
-            }
             menu.setCreateAt(oldMenu.getCreateAt());
             menu.setUpdateAt(System.currentTimeMillis());
             updateById(menu);

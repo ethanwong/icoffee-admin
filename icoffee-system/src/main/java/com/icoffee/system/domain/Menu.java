@@ -29,7 +29,7 @@ import java.util.List;
 @NoArgsConstructor
 @AllArgsConstructor
 @EqualsAndHashCode(callSuper = false)
-public class Menu extends BaseDomain implements Serializable {
+public class Menu extends BaseDomain implements Serializable, Cloneable {
     /**
      * 名称
      */
@@ -77,7 +77,27 @@ public class Menu extends BaseDomain implements Serializable {
      */
     private String parentId = "0";
 
+    /**
+     * 子级菜单
+     */
     @Transient
     @TableField(exist = false)
     private List<Menu> children = new ArrayList<Menu>();
+    /**
+     * 父级菜单
+     */
+    @Transient
+    @TableField(exist = false)
+    private Menu parent;
+
+    @Override
+    public Menu clone() {
+        Menu menu = null;
+        try {
+            menu = (Menu) super.clone();
+        } catch (CloneNotSupportedException e) {
+            e.printStackTrace();
+        }
+        return menu;
+    }
 }
