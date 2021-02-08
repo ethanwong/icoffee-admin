@@ -5,6 +5,8 @@ import com.icoffee.common.dto.ResultDto;
 import com.icoffee.common.service.MpBaseService;
 import com.icoffee.system.domain.User;
 
+import java.util.List;
+
 /**
  * @Name UserService
  * @Description 用户模块Service接口
@@ -63,5 +65,10 @@ public interface UserService extends MpBaseService<User> {
      */
     ResultDto changeLocked(String id) throws Exception;
 
-
+    /**
+     * 根据用户角色获取用户信息
+     * @param roleId
+     * @return
+     */
+    List<User> getUserListByRoleId(String roleId);
 }

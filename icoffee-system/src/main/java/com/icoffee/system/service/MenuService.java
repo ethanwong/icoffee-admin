@@ -36,7 +36,7 @@ public interface MenuService extends MpBaseService<Menu> {
      *
      * @return
      */
-    ResultDto getTree();
+    ResultDto getTree(String parentId);
 
 
     /**
@@ -71,4 +71,11 @@ public interface MenuService extends MpBaseService<Menu> {
      * @return
      */
     PageDto<Menu> findPage(int pageNo, int pageSize);
+
+    /**
+     * 根据模块名称获取菜单信息
+     * @param moduleName
+     * @return
+     */
+    Menu getMenuByModuleName(String moduleName);
 }

@@ -62,6 +62,9 @@ public class BootstrapRunner implements ApplicationRunner {
                 while (ite.hasNext()) {
                     //请求URI
                     String uri = ite.next();
+
+                    uri = hanleUri(uri);
+
                     for (Object method : uriMethods) {
                         Authority authority = new Authority(name, uri, method.toString(), permission, description, module);
                         log.info("init authority={}", authority);
@@ -76,6 +79,14 @@ public class BootstrapRunner implements ApplicationRunner {
          */
         authorityService.batchSaveAuthorityList(authorityList);
 
+    }
+
+    private String hanleUri(String uri) {
+        if (uri.contains("{") && uri.contains("}")) {
+            return uri.substring(0, uri.lastIndexOf("/"));
+        } else {
+            return uri;
+        }
     }
 
 }

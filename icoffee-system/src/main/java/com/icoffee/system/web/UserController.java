@@ -30,15 +30,15 @@ public class UserController {
     @AuthorizePoint(name = "新增用户", module = "user")
     @PostMapping(value = "")
     @ApiOperation(value = "新增用户", notes = "新增用户")
-    public ResultDto create(HttpServletRequest request, @RequestBody User userDO) {
-        return userService.saveEntity(userDO);
+    public ResultDto create(HttpServletRequest request, @RequestBody User user) {
+        return userService.saveEntity(user);
     }
 
     @AuthorizePoint(name = "修改用户", module = "user")
     @PutMapping(value = "")
     @ApiOperation(value = "修改用户", notes = "修改用户")
-    public ResultDto update(HttpServletRequest request, @RequestBody User userDO) {
-        return userService.updateEntity(userDO);
+    public ResultDto update(HttpServletRequest request, @RequestBody User user) {
+        return userService.updateEntity(user);
     }
 
     @AuthorizePoint(name = "删除用户", module = "user")

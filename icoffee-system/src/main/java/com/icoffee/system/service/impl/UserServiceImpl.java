@@ -12,6 +12,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
+
 /**
  * @Name UserServiceImpl
  * @Description 用户模块Service接口实现类
@@ -95,6 +97,11 @@ public class UserServiceImpl extends MpBaseServiceImpl<UserMapper, User> impleme
     @Override
     public ResultDto changeLocked(String id) throws Exception {
         return null;
+    }
+
+    @Override
+    public List<User> getUserListByRoleId(String roleId) {
+        return getBaseMapper().selectList(Wrappers.<User>lambdaQuery().eq(User::getRoleId, roleId));
     }
 
 

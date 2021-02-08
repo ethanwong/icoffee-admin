@@ -85,13 +85,27 @@ public class MenuServiceImpl extends MpBaseServiceImpl<MenuMapper, Menu> impleme
         return parentList;
     }
 
+    public List<Menu> getMenuByParentId(QueryWrapper queryWrapper) {
+
+        List<Menu> parentList = menuService.getBaseMapper().selectList(queryWrapper);
+        for (Menu parentMenu : parentList) {
+            //获取子级菜单
+            this.setChildrenList(parentMenu);
+        }
+        return parentList;
+    }
+
     @Override
-    public ResultDto getTree() {
-
+    public ResultDto getTree(String parentId) {
         List<ElTreeDto> elTreeDtoList = new ArrayList<>();
-
         QueryWrapper<Menu> queryWrapper = new QueryWrapper<>();
-        List<Menu> rootMenuList = menuService.getRootMenuList(queryWrapper);
+
+        //获取跟级菜单
+        queryWrapper.eq("parent_id", parentId);
+        queryWrapper.orderByAsc("order_no");
+
+//        List<Menu> rootMenuList = menuService.getRootMenuList(queryWrapper);
+        List<Menu> rootMenuList = getMenuByParentId(queryWrapper);
         for (Menu menu : rootMenuList) {
             ElTreeDto elTreeDto = new ElTreeDto();
             this.menuToElTree(menu, elTreeDto);
@@ -115,6 +129,7 @@ public class MenuServiceImpl extends MpBaseServiceImpl<MenuMapper, Menu> impleme
         elTreeDto.setId(menu.getId());
         elTreeDto.setName(menu.getTitle());
         elTreeDto.setModule(menu.getModuleName());
+        elTreeDto.setParentId(menu.getParentId());
         elTreeDto.setChildren(elTreeDtoChildrenList);
     }
 
@@ -253,5 +268,14 @@ public class MenuServiceImpl extends MpBaseServiceImpl<MenuMapper, Menu> impleme
     public PageDto<Menu> findPage(int pageNo, int pageSize) {
         QueryWrapper<Menu> queryWrapper = new QueryWrapper<>();
         return selectPage(queryWrapper, pageNo, pageSize);
+    }
+
+    @Override
+    public Menu getMenuByModuleName(String moduleName) {
+        Menu menu = this.getBaseMapper().selectOne(Wrappers.<Menu>lambdaQuery().eq(Menu::getModuleName, moduleName));
+        String parentId = menu.getId();
+        List<Menu> childrens = menuService.getBaseMapper().selectList(Wrappers.<Menu>lambdaQuery().eq(Menu::getParentId, parentId));
+        menu.setChildren(childrens);
+        return menu;
     }
 }

@@ -101,7 +101,7 @@ public class JwtProvider {
         Assert.requireNonEmpty(token, "token不能为空！");
         Assert.requireNonEmpty(secretKey, "secretKey不能为空！");
         try {
-            log.info("verifyToken token={}", token);
+//            log.info("verifyToken token={}", token);
             Algorithm algorithm = Algorithm.HMAC256(secretKey);
             JWTVerifier verifier = JWT.require(algorithm).build();
             return verifier.verify(token);

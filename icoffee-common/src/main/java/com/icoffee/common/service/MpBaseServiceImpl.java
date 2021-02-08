@@ -70,13 +70,12 @@ public class MpBaseServiceImpl<M extends MpBaseMapper<T>, T extends BaseDomain> 
         //每页记录数
         pageDTO.setPageSize(pageSize);
         IPage<T> page = getBaseMapper().selectPage(new Page<T>(pageNo, pageSize), queryWrapper);
-//        if (page.getRecords() == null || page.getRecords().isEmpty()) {
-//            return null;
-//        }
-        //总记录数
-        pageDTO.setCount(page.getTotal());
+
         //总页数
-        pageDTO.setTotal(page.getPages());
+        pageDTO.setPages(page.getPages());
+
+        //总记录数
+        pageDTO.setTotal(page.getTotal());
         //分页数据
         pageDTO.setItems(page.getRecords());
         return pageDTO;

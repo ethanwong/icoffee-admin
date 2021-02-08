@@ -17,11 +17,6 @@ import java.util.List;
 public class PageDto<T> implements Serializable {
 
     /**
-     * 状态
-     */
-    private Integer code = 0;
-
-    /**
      * 当前页数
      */
     private Integer pageNo = 1;
@@ -32,12 +27,12 @@ public class PageDto<T> implements Serializable {
     private Integer pageSize = 10;
 
     /**
-     * 总记录数
+     * 总页数
      */
-    private Long count = 0L;
+    private Long pages = 0L;
 
     /**
-     * 总页数
+     * 总记录数
      */
     private Long total = 0L;
 

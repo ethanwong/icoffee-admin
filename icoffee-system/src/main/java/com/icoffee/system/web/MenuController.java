@@ -2,6 +2,7 @@ package com.icoffee.system.web;
 
 
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
+import com.baomidou.mybatisplus.core.toolkit.StringUtils;
 import com.icoffee.common.annotation.AuthorizePoint;
 import com.icoffee.common.dto.PageDto;
 import com.icoffee.common.dto.ResultDto;
@@ -77,10 +78,12 @@ public class MenuController {
 
     @AuthorizePoint(name = "获取菜单树", module = "menu")
     @ApiOperation(value = "获取菜单树", notes = "")
-    @GetMapping(value = "/getTree")
-    public ResultDto getTree() {
-        return menuService.getTree();
-
+    @GetMapping(value = "/getTree/{parentId}")
+    public ResultDto getTree(@PathVariable String parentId) {
+        if(StringUtils.isBlank(parentId)){
+            parentId = "0";
+        }
+        return menuService.getTree(parentId);
     }
 
 

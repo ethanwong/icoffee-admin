@@ -21,5 +21,6 @@ public class ElTreeDto implements Serializable {
     private String id;
     private String name;
     private String module;
+    private String parentId;
     private List<ElTreeDto> children = new ArrayList<>();
 }

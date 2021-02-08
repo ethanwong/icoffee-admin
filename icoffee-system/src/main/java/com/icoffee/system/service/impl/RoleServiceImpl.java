@@ -1,12 +1,10 @@
 package com.icoffee.system.service.impl;
 
-import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
-import com.baomidou.mybatisplus.core.toolkit.StringUtils;
 import com.baomidou.mybatisplus.core.toolkit.Wrappers;
 import com.icoffee.common.dto.ResultDto;
 import com.icoffee.common.service.MpBaseServiceImpl;
-import com.icoffee.system.domain.*;
-import com.icoffee.system.dto.ElTreeDto;
+import com.icoffee.system.domain.Role;
+import com.icoffee.system.domain.User;
 import com.icoffee.system.mapper.RoleMapper;
 import com.icoffee.system.service.*;
 import lombok.extern.log4j.Log4j2;
@@ -35,21 +33,16 @@ public class RoleServiceImpl extends MpBaseServiceImpl<RoleMapper, Role> impleme
     private RoleMenuService roleMenuService;
     @Autowired
     private MenuService menuService;
-
-    @Override
-    public boolean existsRoleName(String roleName) {
-        Role role = getBaseMapper().selectOne(
-                Wrappers.<Role>lambdaQuery().eq(Role::getName, roleName));
-        if (role == null) {
-            return false;
-        }
-        return true;
-    }
+    @Autowired
+    private UserService userService;
 
     @Override
     public ResultDto saveEntity(Role role) {
         try {
-            if (existsRoleName(role.getName())) {
+
+            Role checkRole = getBaseMapper().selectOne(Wrappers.<Role>lambdaQuery().eq(Role::getName, role.getName()));
+
+            if (checkRole != null) {
                 return ResultDto.returnFail("角色已存在");
             }
             save(role);
@@ -64,12 +57,13 @@ public class RoleServiceImpl extends MpBaseServiceImpl<RoleMapper, Role> impleme
     @Override
     public ResultDto updateEntity(Role role) {
         try {
-            if (existsRoleName(role.getName())) {
-                Role entity = getBaseMapper().selectOne(Wrappers.<Role>lambdaQuery().eq(Role::getName, role.getName()));
-                if (!role.getId().equals(entity.getId())) {
-                    return ResultDto.returnFail("角色已存在");
-                }
+
+            Role checkRole = getBaseMapper().selectOne(Wrappers.<Role>lambdaQuery().eq(Role::getName, role.getName()));
+
+            if (checkRole != null && !checkRole.getId().equals(role.getId())) {
+                return ResultDto.returnFail("角色已存在");
             }
+            role.setUpdateAt(System.currentTimeMillis());
             updateById(role);
             return ResultDto.returnSuccess();
         } catch (Exception e) {
@@ -80,107 +74,23 @@ public class RoleServiceImpl extends MpBaseServiceImpl<RoleMapper, Role> impleme
     }
 
     @Override
-    public ResultDto setRoleAuth(String roleId, List<String> menuIds, List<String> authIds) {
-        try {
-            if (StringUtils.isBlank(roleId)) {
-                return ResultDto.returnFail("角色ID不能为空！");
-            }
-            QueryWrapper<RoleMenu> queryWrapper = new QueryWrapper<>();
-            queryWrapper.eq("role_id", roleId);
-            roleMenuService.deleteByWrapper(queryWrapper);
+    public ResultDto deleteRoleById(String id) {
 
-            QueryWrapper<RoleAuthority> queryWrapper2 = new QueryWrapper<>();
-            queryWrapper2.eq("role_id", roleId);
-            roleAuthorityService.deleteByWrapper(queryWrapper2);
+        //判断角色是否关用户
+        List<User> userList = userService.getUserListByRoleId(id);
+        if (userList != null && !userList.isEmpty()) {
 
-            if (menuIds.size() > 0) {
-                for (String menuId : menuIds) {
-                    RoleMenu roleMenu = new RoleMenu();
-                    roleMenu.setMenuId(menuId);
-                    roleMenu.setRoleId(roleId);
-                    roleMenuService.save(roleMenu);
-                }
+            List<String> nameList = new ArrayList<>();
+            for (User user : userList) {
+                nameList.add(user.getUsername());
             }
-
-            if (authIds.size() > 0) {
-                for (String authId : authIds) {
-                    RoleAuthority roleAuthority = new RoleAuthority();
-                    roleAuthority.setAuthorityId(authId);
-                    roleAuthority.setRoleId(roleId);
-                    roleAuthorityService.save(roleAuthority);
-                }
-            }
-            return ResultDto.returnSuccess();
-        } catch (Exception e) {
-            log.error("设置角色权限出现异常,异常信息为:{}", e.getMessage());
-            e.printStackTrace();
-            return ResultDto.returnFail(e.getMessage());
+            ResultDto.returnFail("删除错误，角色被如下用户关联：" + nameList.toString());
         }
+
+        this.removeById(id);
+
+        return ResultDto.returnSuccess();
     }
 
-    @Override
-    public List<ElTreeDto> getRoleAuth(String roleId) {
-        List<ElTreeDto> dtoList = new ArrayList<>();
-//        List<Menu> menuList = menuService.getBaseMapper().selectList(Wrappers.<Menu>lambdaQuery().eq(Menu::getParentId, "0").orderByAsc(Menu::getOrderNo));
-//        List<RoleAuthority> roleAuthorityList = roleAuthorityService.getBaseMapper().selectList(Wrappers.<RoleAuthority>lambdaQuery().eq(RoleAuthority::getRoleId, roleId));
-//        List<RoleMenu> roleMenuList = roleMenuService.getBaseMapper().selectList(Wrappers.<RoleMenu>lambdaQuery().eq(RoleMenu::getRoleId, roleId));
-//        for (Menu menu : menuList) {
-//            ElTreeDto dto = new ElTreeDto();
-//            dto.setName(menu.getTitle());
-//            dto.setValue(menu.getId());
-//            dto.setType("menu");
-//            for (RoleMenu roleMenu : roleMenuList) {
-//                if (menu.getId().equals(roleMenu.getMenuId())) {
-//                    dto.setChecked(true);
-//                    roleMenuList.remove(roleMenu);
-//                    break;
-//                }
-//            }
-//            getRecursionMenu(dto, roleMenuList, roleAuthorityList);
-//            dtoList.add(dto);
-//        }
-        return dtoList;
-    }
 
-    private void getRecursionMenu(ElTreeDto roleAuthDto, List<RoleMenu> roleMenuList, List<RoleAuthority> roleAuthorityList) {
-//        List<Menu> menuList = menuService.getBaseMapper().selectList(Wrappers.<Menu>lambdaQuery().eq(Menu::getParentId, roleAuthDto.getValue()).orderByAsc(Menu::getOrderNo));
-//        if (menuList.size() > 0) {
-//            for (Menu menu : menuList) {
-//                ElTreeDto dto = new ElTreeDto();
-//                dto.setName(menu.getTitle());
-//                dto.setType("menu");
-//                dto.setValue(menu.getId());
-//                for (RoleMenu roleMenu : roleMenuList) {
-//                    if (menu.getId().equals(roleMenu.getMenuId())) {
-//                        dto.setChecked(true);
-//                        roleMenuList.remove(roleMenu);
-//                        break;
-//                    }
-//                }
-//                getRecursionMenu(dto, roleMenuList, roleAuthorityList);
-//                roleAuthDto.getChildren().add(dto);
-//            }
-//        } else {
-//            List<Authority> authorityList = authorityService.getBaseMapper().selectList(Wrappers.<Authority>lambdaQuery().eq(Authority::getMenuId, roleAuthDto.getValue()));
-//            for (Authority authority : authorityList) {
-//                XTreeDto authDto = new XTreeDto();
-//                authDto.setName(authority.getName());
-//                authDto.setType("auth");
-//                authDto.setValue(authority.getId());
-//                for (RoleAuthority roleAuthority : roleAuthorityList) {
-//                    if (authority.getId().equals(roleAuthority.getAuthorityId())) {
-//                        authDto.setChecked(true);
-//                        roleAuthorityList.remove(roleAuthority);
-//                        break;
-//                    }
-//                }
-//                roleAuthDto.getChildren().add(authDto);
-//            }
-//        }
-    }
-
-    @Override
-    public List<ElTreeDto> findAuthorityByRoleId(String roleId) {
-        return null;
-    }
 }

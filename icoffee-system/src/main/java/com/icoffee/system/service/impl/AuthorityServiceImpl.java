@@ -35,7 +35,7 @@ public class AuthorityServiceImpl extends MpBaseServiceImpl<AuthorityMapper, Aut
         try {
             List<Authority> batchSaveList = new ArrayList<>();
             for (Authority authority : authorityList) {
-                Authority checkAuthoriy = getBaseMapper().selectOne(Wrappers.<Authority>lambdaQuery().eq(Authority::getUri, authority.getUri()).eq(Authority::getMethod, authority.getMethod()));
+                Authority checkAuthoriy = getBaseMapper().selectOne(Wrappers.<Authority>lambdaQuery().eq(Authority::getPermission, authority.getPermission()));
                 if (checkAuthoriy != null) {
                     authority.setId(checkAuthoriy.getId());
                     authority.setCreateAt(checkAuthoriy.getCreateAt());

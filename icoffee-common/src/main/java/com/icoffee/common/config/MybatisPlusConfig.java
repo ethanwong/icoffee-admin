@@ -1,5 +1,8 @@
 package com.icoffee.common.config;
 
+import com.baomidou.mybatisplus.annotation.DbType;
+import com.baomidou.mybatisplus.extension.plugins.MybatisPlusInterceptor;
+import com.baomidou.mybatisplus.extension.plugins.inner.PaginationInnerInterceptor;
 import com.icoffee.common.mybatis.injector.CustomSqlInjector;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -21,7 +24,15 @@ public class MybatisPlusConfig {
     @Bean
     public CustomSqlInjector customSqlInjector() {
         return new CustomSqlInjector();
-    }
+   }
 
+
+
+    @Bean
+    public MybatisPlusInterceptor mybatisPlusInterceptor() {
+        MybatisPlusInterceptor mybatisPlusInterceptor = new MybatisPlusInterceptor();
+        mybatisPlusInterceptor.addInnerInterceptor(new PaginationInnerInterceptor(DbType.MYSQL));
+        return mybatisPlusInterceptor;
+    }
 
 }
