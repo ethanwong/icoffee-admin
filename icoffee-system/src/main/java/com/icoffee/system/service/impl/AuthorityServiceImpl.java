@@ -53,4 +53,9 @@ public class AuthorityServiceImpl extends MpBaseServiceImpl<AuthorityMapper, Aut
             return ResultDto.returnFail(e.getMessage());
         }
     }
+
+    @Override
+    public List<Authority> getByModule(String module) {
+        return getBaseMapper().selectList(Wrappers.<Authority>lambdaQuery().eq(Authority::getModule,module));
+    }
 }

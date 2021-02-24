@@ -1,5 +1,6 @@
 package com.icoffee.system.domain;
 
+import com.baomidou.mybatisplus.annotation.TableField;
 import com.baomidou.mybatisplus.annotation.TableName;
 import com.icoffee.common.domain.BaseDomain;
 import lombok.AllArgsConstructor;
@@ -9,7 +10,10 @@ import lombok.NoArgsConstructor;
 
 import javax.persistence.Entity;
 import javax.persistence.Table;
+import javax.persistence.Transient;
 import java.io.Serializable;
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * @Name Role
@@ -28,5 +32,15 @@ public class Role extends BaseDomain implements Serializable {
 
     private String name;
     private String description;
+
+
+    @Transient
+    @TableField(exist = false)
+    private List<String> menuIds = new ArrayList<>();
+
+    @Transient
+    @TableField(exist = false)
+    private List<String> authIds = new ArrayList<>();
+
 
 }

@@ -25,9 +25,7 @@ import java.io.Serializable;
 @AllArgsConstructor
 @EqualsAndHashCode(callSuper = false)
 public class RoleAuthority extends BaseDomain implements Serializable {
-
-    private String authorityId;
     private String roleId;
-
+    private String authorityId;
 
 }

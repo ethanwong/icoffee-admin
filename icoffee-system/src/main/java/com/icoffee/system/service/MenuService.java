@@ -78,4 +78,11 @@ public interface MenuService extends MpBaseService<Menu> {
      * @return
      */
     Menu getMenuByModuleName(String moduleName);
+
+    /**
+     * 获取菜单信息，包括子菜单和父级菜单
+     * @param menuId
+     * @return
+     */
+    Menu getAllMenuInfoById(String menuId);
 }

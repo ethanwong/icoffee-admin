@@ -4,6 +4,8 @@ package com.icoffee.system.service;
 import com.icoffee.common.service.MpBaseService;
 import com.icoffee.system.domain.RoleAuthority;
 
+import java.util.List;
+
 /**
  * @Name RoleAuthorityService
  * @Description ${DESCRIPTION}
@@ -11,4 +13,10 @@ import com.icoffee.system.domain.RoleAuthority;
  * @Create 2020-02-27 15:30
  */
 public interface RoleAuthorityService extends MpBaseService<RoleAuthority> {
+    /**
+     * 保存角色授权信息
+     * @param roleId
+     * @param authIdResult
+     */
+    void saveRoleAuthority(String roleId, List<String> authIdResult);
 }

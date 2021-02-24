@@ -7,6 +7,7 @@ import com.icoffee.common.dto.PageDto;
 import com.icoffee.common.dto.ResultDto;
 import com.icoffee.system.domain.Authority;
 import com.icoffee.system.domain.Menu;
+import com.icoffee.system.dto.ElTreeDto;
 import com.icoffee.system.service.AuthorityService;
 import com.icoffee.system.service.MenuService;
 import io.swagger.annotations.Api;
@@ -68,4 +69,28 @@ public class AuthorityController {
         PageDto<Authority> pageDTO = authorityService.selectPage(queryWrapper, pageNo, pageSize);
         return ResultDto.returnSuccessData(pageDTO);
     }
+
+    @AuthorizePoint(name = "根据模块获取授权", module = "authority")
+    @ApiOperation(value = "根据模块获取授权", notes = "")
+    @GetMapping(value = "/getByModule/{module}")
+    public ResultDto getByModule(@PathVariable String module) {
+
+        Menu menu = menuService.getMenuByModuleName(module);
+
+        List<Authority> authoritys = authorityService.getByModule(module);
+
+        List<ElTreeDto> elTreeDtoList = new ArrayList<>();
+        for (Authority authority : authoritys) {
+            ElTreeDto elTreeDto = new ElTreeDto();
+            elTreeDto.setId(authority.getId());
+            elTreeDto.setName(authority.getName());
+            elTreeDto.setModule(module);
+            elTreeDto.setParentId(menu.getId());
+            elTreeDto.setTag("AUTHORITY");
+            elTreeDtoList.add(elTreeDto);
+        }
+
+        return ResultDto.returnSuccessData(elTreeDtoList);
+    }
+
 }

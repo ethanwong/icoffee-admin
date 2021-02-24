@@ -21,4 +21,11 @@ public interface AuthorityService extends MpBaseService<Authority> {
      * @return
      */
     ResultDto batchSaveAuthorityList(List<Authority> authorityList);
+
+    /**
+     * 根据模块获取授权信息
+     * @param module
+     * @return
+     */
+    List<Authority> getByModule(String module);
 }

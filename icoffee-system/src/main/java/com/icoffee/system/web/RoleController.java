@@ -5,6 +5,7 @@ import com.icoffee.common.annotation.AuthorizePoint;
 import com.icoffee.common.dto.ResultDto;
 import com.icoffee.common.utils.SearchFilter;
 import com.icoffee.system.domain.Role;
+import com.icoffee.system.dto.RoleMenuAuthDto;
 import com.icoffee.system.service.RoleService;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
@@ -56,7 +57,7 @@ public class RoleController {
     @ApiOperation(value = "根据ID查询", notes = "根据ID查询")
     @GetMapping(value = "/getById/{id}")
     public ResultDto getById(HttpServletRequest request, @PathVariable String id) {
-        return ResultDto.returnSuccessData(roleService.getById(id));
+        return ResultDto.returnSuccessData(roleService.getRoleById(id));
     }
 
     @AuthorizePoint(name = "删除角色", module = "role")
@@ -86,9 +87,9 @@ public class RoleController {
 
     @AuthorizePoint(name = "设置角色授权信息", module = "role")
     @ApiOperation(value = "设置角色授权信息", notes = "设置角色授权信息")
-    @PostMapping(value = "/setRoleAuth")
-    public ResultDto setRoleAuth(@RequestParam("roleId") String roleId, @RequestParam("menuIds") List<String> menuIds, @RequestParam("authIds") List<String> authIds) throws IllegalAccessException {
-        return ResultDto.returnSuccess();
+    @PutMapping(value = "/setRoleAuth")
+    public ResultDto setRoleAuth(@RequestBody RoleMenuAuthDto roleMenuAuthDto)  {
+        return roleService.setRoleAuth(roleMenuAuthDto);
     }
 
     @AuthorizePoint(name = "获取角色列表", module = "role")

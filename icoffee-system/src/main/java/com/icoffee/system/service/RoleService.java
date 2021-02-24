@@ -4,6 +4,7 @@ package com.icoffee.system.service;
 import com.icoffee.common.dto.ResultDto;
 import com.icoffee.common.service.MpBaseService;
 import com.icoffee.system.domain.Role;
+import com.icoffee.system.dto.RoleMenuAuthDto;
 
 /**
  * @Name RoleService
@@ -36,4 +37,18 @@ public interface RoleService extends MpBaseService<Role> {
      * @return
      */
     ResultDto deleteRoleById(String id);
+
+    /**
+     * 设置角色菜单和授权
+     * @param roleMenuAuthDto
+     * @return
+     */
+    ResultDto setRoleAuth(RoleMenuAuthDto roleMenuAuthDto);
+
+    /**
+     * 获取角色信息
+     * @param id
+     * @return
+     */
+    Role getRoleById(String id);
 }

@@ -25,8 +25,6 @@ import java.io.Serializable;
 @AllArgsConstructor
 @EqualsAndHashCode(callSuper = false)
 public class RoleMenu extends BaseDomain implements Serializable {
-
-    private String menuId;
     private String roleId;
-
+    private String menuId;
 }

@@ -131,7 +131,10 @@ public class MenuServiceImpl extends MpBaseServiceImpl<MenuMapper, Menu> impleme
         elTreeDto.setModule(menu.getModuleName());
         elTreeDto.setParentId(menu.getParentId());
         elTreeDto.setChildren(elTreeDtoChildrenList);
+        elTreeDto.setTag("MENU");
+
     }
+
 
     private boolean existsName(String title, String sourceId) {
         Menu menu = getBaseMapper().selectOne(Wrappers.<Menu>lambdaQuery().eq(Menu::getTitle, title));
@@ -276,6 +279,18 @@ public class MenuServiceImpl extends MpBaseServiceImpl<MenuMapper, Menu> impleme
         String parentId = menu.getId();
         List<Menu> childrens = menuService.getBaseMapper().selectList(Wrappers.<Menu>lambdaQuery().eq(Menu::getParentId, parentId));
         menu.setChildren(childrens);
+        return menu;
+    }
+
+    @Override
+    public Menu getAllMenuInfoById(String menuId) {
+        //菜单基本信息
+        Menu menu = this.getById(menuId);
+        //设置子级别菜单
+        this.setChildrenList(menu);
+        //设置父级菜单
+        menu.setParent(this.getById(menu.getParentId()));
+
         return menu;
     }
 }
