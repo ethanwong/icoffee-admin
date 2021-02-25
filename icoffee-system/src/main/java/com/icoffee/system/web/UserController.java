@@ -1,10 +1,14 @@
 package com.icoffee.system.web;
 
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
+import com.baomidou.mybatisplus.core.toolkit.StringUtils;
+import com.icoffee.common.annotation.AuthorizePoint;
 import com.icoffee.common.dto.PageDto;
 import com.icoffee.common.dto.ResultDto;
-import com.icoffee.common.annotation.AuthorizePoint;
+import com.icoffee.common.utils.SearchFilter;
+import com.icoffee.system.domain.Role;
 import com.icoffee.system.domain.User;
+import com.icoffee.system.service.RoleService;
 import com.icoffee.system.service.UserService;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
@@ -26,6 +30,8 @@ public class UserController {
 
     @Autowired
     private UserService userService;
+    @Autowired
+    private RoleService roleService;
 
     @AuthorizePoint(name = "新增用户", module = "user")
     @PostMapping(value = "")
@@ -42,17 +48,27 @@ public class UserController {
     }
 
     @AuthorizePoint(name = "删除用户", module = "user")
-    @DeleteMapping(value = "")
+    @DeleteMapping(value = "{ids}")
     @ApiOperation(value = "删除用户", notes = "删除用户")
-    public ResultDto delete(HttpServletRequest request, @RequestParam String id) throws Exception {
-        return userService.deleteById(id);
+    public ResultDto delete(HttpServletRequest request, @PathVariable String ids) throws Exception {
+        ResultDto resultDto = new ResultDto();
+        String[] userIds = ids.split(",");
+        for(String userId:userIds){
+            resultDto = userService.deleteById(userId);
+            if (!resultDto.success) {
+                return resultDto;
+            }
+        }
+        return ResultDto.returnSuccess();
     }
 
     @AuthorizePoint(name = "根据ID获取用户", module = "user")
     @GetMapping(value = "/getById/{userId}")
     @ApiOperation(value = "根据ID获取用户", notes = "根据ID获取用户")
     public ResultDto getById(HttpServletRequest request, @PathVariable String userId) {
-        return ResultDto.returnSuccessData(userService.getById(userId));
+        User user = userService.getById(userId);
+        user.setPassword("");
+        return ResultDto.returnSuccessData(user);
     }
 
     @AuthorizePoint(name = "根据用户名获取用户", module = "user")
@@ -63,6 +79,7 @@ public class UserController {
         if (userDO == null) {
             return ResultDto.returnFail("");
         }
+        userDO.setPassword("");
         return ResultDto.returnSuccessData(userDO);
     }
 
@@ -70,9 +87,23 @@ public class UserController {
     @GetMapping(value = "/page")
     @ApiOperation(value = "用户分页", notes = "用户分页")
     public ResultDto page(HttpServletRequest request, @RequestParam("pageNo") int pageNo, @RequestParam("pageSize") int pageSize) {
-        QueryWrapper<User> queryWrapper = new QueryWrapper<>();
-        PageDto<User> pageDTO = userService.selectPage(queryWrapper, pageNo, pageSize);
-        return ResultDto.returnSuccessData(pageDTO);
+        QueryWrapper<User> queryWrapper = SearchFilter.buildByHttpRequestList(request);
+        queryWrapper.orderByDesc("create_at");
+        PageDto<User> pageDto = userService.selectPage(queryWrapper, pageNo, pageSize);
+
+        for(User user:pageDto.getItems()){
+            if(StringUtils.isBlank(user.getRoleId())){
+                continue;
+            }
+            Role role = roleService.getById(user.getRoleId());
+            if(role ==null){
+                continue;
+            }
+            user.setRoleName(role.getName());
+            user.setPassword("");
+        }
+
+        return ResultDto.returnSuccessData(pageDto);
     }
 
 

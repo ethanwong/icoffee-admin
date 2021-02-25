@@ -1,5 +1,6 @@
 package com.icoffee.system.domain;
 
+import com.baomidou.mybatisplus.annotation.TableField;
 import com.baomidou.mybatisplus.annotation.TableName;
 import com.icoffee.common.domain.BaseDomain;
 import io.swagger.annotations.ApiModelProperty;
@@ -10,6 +11,7 @@ import lombok.NoArgsConstructor;
 
 import javax.persistence.Entity;
 import javax.persistence.Table;
+import javax.persistence.Transient;
 import java.io.Serializable;
 
 /**
@@ -45,6 +47,12 @@ public class User extends BaseDomain implements Serializable {
     private String realname;
 
     /**
+     * 性别
+     */
+    @ApiModelProperty(value = "性别,1-男，2-女")
+    private Integer gender;
+
+    /**
      * 手机号码
      */
     @ApiModelProperty(value = "手机号码")
@@ -53,8 +61,8 @@ public class User extends BaseDomain implements Serializable {
     /**
      * 是否活动，0-否，1-是
      */
-    @ApiModelProperty(value = "是否活动，0-否，1-是")
-    private Integer active = 1;
+    @ApiModelProperty(value = "是否活动，false-否，true-是")
+    private Boolean active = true;
 
     /**
      * 邮件
@@ -81,7 +89,14 @@ public class User extends BaseDomain implements Serializable {
     private String roleId;
 
     /**
-     * 是否锁定，0-否，1-是
+     * 角色名称
      */
-    private int locked = 0;
+    @Transient
+    @TableField(exist = false)
+    private String roleName;
+
+    /**
+     * 是否锁定，false-否，true-是
+     */
+    private Boolean locked = false;
 }

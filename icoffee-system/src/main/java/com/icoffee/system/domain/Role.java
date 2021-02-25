@@ -8,6 +8,7 @@ import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
 
+import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.Table;
 import javax.persistence.Transient;
@@ -32,15 +33,25 @@ public class Role extends BaseDomain implements Serializable {
 
     private String name;
     private String description;
+    /**
+     * 菜单ID列表
+     */
+    @Column(columnDefinition="TEXT")
+    private String menuIds;
+    /**
+     * 授权ID列表
+     */
+    @Column(columnDefinition="TEXT")
+    private String authIds;
 
 
     @Transient
     @TableField(exist = false)
-    private List<String> menuIds = new ArrayList<>();
+    private List<Menu> menus = new ArrayList<>();
 
     @Transient
     @TableField(exist = false)
-    private List<String> authIds = new ArrayList<>();
+    private List<Authority> auths = new ArrayList<>();
 
 
 }

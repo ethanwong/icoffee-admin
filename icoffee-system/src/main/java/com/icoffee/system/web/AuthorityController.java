@@ -65,7 +65,7 @@ public class AuthorityController {
         if (StringUtils.isNotBlank(name)) {
             queryWrapper.like("name", name);
         }
-
+        queryWrapper.orderByDesc("create_at");
         PageDto<Authority> pageDTO = authorityService.selectPage(queryWrapper, pageNo, pageSize);
         return ResultDto.returnSuccessData(pageDTO);
     }
@@ -87,6 +87,7 @@ public class AuthorityController {
             elTreeDto.setModule(module);
             elTreeDto.setParentId(menu.getId());
             elTreeDto.setTag("AUTHORITY");
+            elTreeDto.setIsLeaf(true);
             elTreeDtoList.add(elTreeDto);
         }
 

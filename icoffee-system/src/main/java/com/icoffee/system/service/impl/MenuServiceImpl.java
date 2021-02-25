@@ -270,6 +270,7 @@ public class MenuServiceImpl extends MpBaseServiceImpl<MenuMapper, Menu> impleme
     @Override
     public PageDto<Menu> findPage(int pageNo, int pageSize) {
         QueryWrapper<Menu> queryWrapper = new QueryWrapper<>();
+        queryWrapper.orderByDesc("create_at","order_no");
         return selectPage(queryWrapper, pageNo, pageSize);
     }
 

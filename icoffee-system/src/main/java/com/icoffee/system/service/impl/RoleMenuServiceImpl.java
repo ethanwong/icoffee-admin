@@ -28,9 +28,19 @@ public class RoleMenuServiceImpl extends MpBaseServiceImpl<RoleMenuMapper, RoleM
 
         //保存新数据
         List<RoleMenu> roleMenus = new ArrayList<>();
-        for(String menuId:menuIdResult){
-            roleMenus.add(new RoleMenu(roleId,menuId));
+        for (String menuId : menuIdResult) {
+            roleMenus.add(new RoleMenu(roleId, menuId));
         }
         saveBatch(roleMenus);
+    }
+
+    @Override
+    public List<String> getMenuIdsByRoleId(String roleId) {
+        List<RoleMenu> list = this.getBaseMapper().selectList(Wrappers.<RoleMenu>lambdaQuery().eq(RoleMenu::getRoleId, roleId));
+        List<String> result = new ArrayList<>();
+        for(RoleMenu roleMenu:list){
+            result.add(roleMenu.getMenuId());
+        }
+        return result;
     }
 }

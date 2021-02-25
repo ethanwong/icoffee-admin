@@ -27,8 +27,6 @@ public class UserServiceImpl extends MpBaseServiceImpl<UserMapper, User> impleme
     @Autowired
     private PasswordEncoder passwordEncoder;
 
-//    @Autowired
-//    private UserRoleService userRoleService;
 
     @Override
     public User getByUsername(String username) {
@@ -36,18 +34,16 @@ public class UserServiceImpl extends MpBaseServiceImpl<UserMapper, User> impleme
     }
 
     @Override
-    public ResultDto saveEntity(User userDO) {
+    public ResultDto saveEntity(User user) {
         try {
-            if (existsUsername(userDO.getUsername())) {
+            if (existsUsername(user.getUsername())) {
                 return ResultDto.returnFail("账号已存在");
             }
-            if (StringUtils.isBlank(userDO.getPassword())) {
-                userDO.setPassword("123456");
+            if (StringUtils.isBlank(user.getPassword())) {
+                user.setPassword("123456");
             }
-            userDO.setPassword(passwordEncoder.encode(userDO.getPassword()));
-//            userDO.setAreaId(areaId.replace(",",""));
-            save(userDO);
-//            userRoleService.save(new UserRoleDO(userDO.getId(), roleId));
+            user.setPassword(passwordEncoder.encode(user.getPassword()));
+            save(user);
             return ResultDto.returnSuccess();
         } catch (Exception e) {
             e.printStackTrace();
@@ -56,30 +52,27 @@ public class UserServiceImpl extends MpBaseServiceImpl<UserMapper, User> impleme
     }
 
     @Override
-    public ResultDto updateEntity(User userDO) {
+    public ResultDto updateEntity(User user) {
         try {
-            if (existsUsername(userDO.getUsername())) {
-                User checkBean = getByUsername(userDO.getUsername());
-                if (!userDO.getId().equals(checkBean.getId())) {
-                    return ResultDto.returnFail("账号重复");
-                }
+
+            String username = user.getUsername();
+            User userDb = getByUsername(username);
+            if (userDb != null && !user.getId().equals(userDb.getId())) {
+                return ResultDto.returnFail("已经存在账号:" + username);
             }
 
-            User olduserDO = getById(userDO.getId());
-            if (StringUtils.isBlank(userDO.getPassword())) {
-                userDO.setPassword(olduserDO.getPassword());
+            if (StringUtils.isBlank(user.getPassword())) {
+                user.setPassword(userDb.getPassword());
             } else {
-                userDO.setPassword(passwordEncoder.encode(userDO.getPassword()));
+                user.setPassword(passwordEncoder.encode(user.getPassword()));
             }
-//            userDO.setAreaId(olduserDO.getAreaId());
-            userDO.setCreateAt(olduserDO.getCreateAt());
-            userDO.setUpdateAt(System.currentTimeMillis());
-            save(userDO);
-
+            user.setCreateAt(userDb.getCreateAt());
+            user.setUpdateAt(System.currentTimeMillis());
+            saveOrUpdate(user);
             return ResultDto.returnSuccess();
         } catch (Exception e) {
-            e.printStackTrace();
-            return ResultDto.returnFail("");
+            log.error(e);
+            return ResultDto.returnFail(e.getMessage());
         }
     }
 

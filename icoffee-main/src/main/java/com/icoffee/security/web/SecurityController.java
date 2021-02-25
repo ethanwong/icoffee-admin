@@ -9,9 +9,11 @@ import com.icoffee.security.dto.LoginResultDto;
 import com.icoffee.security.dto.RouteDto;
 import com.icoffee.security.dto.UserInfoDto;
 import com.icoffee.system.domain.Menu;
+import com.icoffee.system.domain.Role;
 import com.icoffee.system.domain.User;
 import com.icoffee.system.dto.LoginUserDto;
 import com.icoffee.system.service.MenuService;
+import com.icoffee.system.service.RoleService;
 import com.icoffee.system.service.UserService;
 import com.wf.captcha.ArithmeticCaptcha;
 import com.wf.captcha.base.Captcha;
@@ -56,7 +58,11 @@ public class SecurityController {
     @Autowired
     private UserService userService;
     @Autowired
+    private RoleService roleService;
+    @Autowired
     private MenuService menuService;
+    @Autowired
+    private com.icoffee.system.service.RoleMenuService roleMenuService;
 
     /**
      * 过期时间间隔
@@ -180,11 +186,58 @@ public class SecurityController {
         String currentUsername = SecurityUtils.getCurrentUsername();
         User user = userService.getByUsername(currentUsername);
 
+        Role role = roleService.getRoleById(user.getRoleId());
+
         userInfoDto.setUsername(currentUsername);
-        userInfoDto.getRoles().add("admin");
+        userInfoDto.getRoles().add(role.getName());
         userInfoDto.setAvatar("");
-        userInfoDto.setRoutes(genUserRoutes());
+        userInfoDto.setRoutes(genUserRoutes(role));
         return ResultDto.returnSuccessData(userInfoDto);
+    }
+
+    /**
+     * 获取用户的路由信息
+     *
+     * @return
+     */
+    private List<RouteDto> genUserRoutes(Role role) {
+        List<RouteDto> routes = new ArrayList<>();
+        //跟级菜单
+        QueryWrapper<Menu> queryWrapper = new QueryWrapper<>();
+        List<Menu> rootMenuList = menuService.getRootMenuList(queryWrapper);
+
+        //获取当前用户所属角色所关联的菜单
+        List<String> checkMenuIds = roleMenuService.getMenuIdsByRoleId(role.getId());
+        boolean filterMenu = true;
+
+        //超级管理员展示所有菜单路由
+        if (role.getName().equals("root")) {
+            filterMenu = false;
+        }
+
+        //生成路由
+        for (Menu rootMenu : rootMenuList) {
+
+            if (filterMenu && !checkMenuIds.contains(rootMenu.getId())) {
+                continue;
+            }
+
+            Map<String, Object> meta = new HashMap<>();
+            meta.put("title", rootMenu.getTitle());
+            meta.put("icon", rootMenu.getIcon());
+
+            //子级路由
+            List<RouteDto> children = new ArrayList<>();
+            for (Menu child : rootMenu.getChildren()) {
+                if (filterMenu && !checkMenuIds.contains(child.getId())) {
+                    continue;
+                }
+                setChildrenRoute(child, children, checkMenuIds, filterMenu);
+            }
+            routes.add(new RouteDto(rootMenu.getModuleName(), rootMenu.getRoutePath(), rootMenu.getComponentPath(), meta, children, rootMenu.getHidden()));
+        }
+
+        return routes;
     }
 
     /**
@@ -193,43 +246,23 @@ public class SecurityController {
      * @param child
      * @param children
      */
-    private void setChildrenRoute(Menu child, List<RouteDto> children) {
+    private void setChildrenRoute(Menu child, List<RouteDto> children, List<String> menuIds, boolean filterMenu) {
         Map<String, Object> childMeta = new HashMap<>();
         childMeta.put("title", child.getTitle());
         childMeta.put("icon", child.getIcon());
         List<RouteDto> subChildren = new ArrayList<>();
         if (child.getChildren() != null && !child.getChildren().isEmpty()) {
             for (Menu sub : child.getChildren()) {
-                setChildrenRoute(sub, subChildren);
+
+                if (filterMenu && !menuIds.contains(sub.getId())) {
+                    continue;
+                }
+
+                setChildrenRoute(sub, subChildren, menuIds, filterMenu);
             }
         }
-        children.add(new RouteDto(child.getModuleName(), child.getRoutePath(), child.getComponentPath(), childMeta, subChildren,child.getHidden()));
+        children.add(new RouteDto(child.getModuleName(), child.getRoutePath(), child.getComponentPath(), childMeta, subChildren, child.getHidden()));
     }
 
-    /**
-     * 获取用户的路由信息
-     *
-     * @return
-     */
-    private List<RouteDto> genUserRoutes() {
-        List<RouteDto> routes = new ArrayList<>();
-        //跟级菜单
-        QueryWrapper<Menu> queryWrapper = new QueryWrapper<>();
-        List<Menu> rootMenuList = menuService.getRootMenuList(queryWrapper);
-        for (Menu rootMenu : rootMenuList) {
-            Map<String, Object> meta = new HashMap<>();
-            meta.put("title", rootMenu.getTitle());
-            meta.put("icon", rootMenu.getIcon());
-
-            //子级路由
-            List<RouteDto> children = new ArrayList<>();
-            for (Menu child : rootMenu.getChildren()) {
-                setChildrenRoute(child, children);
-            }
-            routes.add(new RouteDto(rootMenu.getModuleName(), rootMenu.getRoutePath(), rootMenu.getComponentPath(), meta, children,rootMenu.getHidden()));
-        }
-
-        return routes;
-    }
 
 }

@@ -92,6 +92,7 @@ public class RoleServiceImpl extends MpBaseServiceImpl<RoleMapper, Role> impleme
         return ResultDto.returnSuccess();
     }
 
+
     @Override
     public ResultDto setRoleAuth(RoleMenuAuthDto roleMenuAuthDto) {
         try {
@@ -104,6 +105,20 @@ public class RoleServiceImpl extends MpBaseServiceImpl<RoleMapper, Role> impleme
             List<String> menuIds = roleMenuAuthDto.getMenuIds();
             List<String> authIds = roleMenuAuthDto.getAuthIds();
 
+
+            /**
+             * 更新角色信息
+             */
+            Role role  = this.getById(roleId);
+
+            role.setMenuIds(String.join(",", menuIds));
+            role.setAuthIds(String.join(",", authIds));
+            updateEntity(role);
+
+            /**
+             * 根据前端选择的菜单和授权生成角色所有关联的菜单和授权信息
+             */
+
             /**
              * 菜单
              */
@@ -113,7 +128,7 @@ public class RoleServiceImpl extends MpBaseServiceImpl<RoleMapper, Role> impleme
              */
             List<String> authIdResult = new ArrayList<>();
 
-            //根据菜单修正数据
+            //根据菜单补全数据
             for (String menuId : menuIds) {
                 //将当前菜单ID,并保存
                 menuIdResult.add(menuId);
@@ -140,7 +155,7 @@ public class RoleServiceImpl extends MpBaseServiceImpl<RoleMapper, Role> impleme
             }
 
 
-            //根据授权修正数据
+            //根据授权补全数据
             for (String authId : authIds) {
                 //添加已选中
                 if (!authIdResult.contains(authId)) {
@@ -171,9 +186,10 @@ public class RoleServiceImpl extends MpBaseServiceImpl<RoleMapper, Role> impleme
 
             //保存角色菜单信息
             roleMenuService.saveRoleMenu(roleId, menuIdResult);
-
             //保存角色授权信息
             roleAuthorityService.saveRoleAuthority(roleId, authIdResult);
+
+
             return ResultDto.returnSuccess();
         } catch (Exception e) {
             log.error(e);
@@ -188,14 +204,14 @@ public class RoleServiceImpl extends MpBaseServiceImpl<RoleMapper, Role> impleme
 
         List<RoleMenu> list = roleMenuService.getBaseMapper().selectList(Wrappers.<RoleMenu>lambdaQuery().eq(RoleMenu::getRoleId, id));
 
-        for (RoleMenu roleMenu : list) {
-            role.getMenuIds().add(roleMenu.getMenuId());
-        }
-
-        List<RoleAuthority> authList = roleAuthorityService.getBaseMapper().selectList(Wrappers.<RoleAuthority>lambdaQuery().eq(RoleAuthority::getRoleId, id));
-        for (RoleAuthority roleAuthority : authList) {
-            role.getAuthIds().add(roleAuthority.getAuthorityId());
-        }
+//        for (RoleMenu roleMenu : list) {
+//            role.getMenuIds().add(roleMenu.getMenuId());
+//        }
+//
+//        List<RoleAuthority> authList = roleAuthorityService.getBaseMapper().selectList(Wrappers.<RoleAuthority>lambdaQuery().eq(RoleAuthority::getRoleId, id));
+//        for (RoleAuthority roleAuthority : authList) {
+//            role.getAuthIds().add(roleAuthority.getAuthorityId());
+//        }
 
         return role;
     }
@@ -217,8 +233,8 @@ public class RoleServiceImpl extends MpBaseServiceImpl<RoleMapper, Role> impleme
     private void setChildrenId(List<String> result, Menu menu) {
         if (menu.getChildren() != null && menu.getChildren().size() > 0) {
             for (Menu child : menu.getChildren()) {
-                if (!result.contains(menu.getId())) {
-                    result.add(menu.getId());
+                if (!result.contains(child.getId())) {
+                    result.add(child.getId());
                 }
                 setChildrenId(result, child);
             }

@@ -19,4 +19,11 @@ public interface RoleMenuService extends MpBaseService<RoleMenu> {
      * @param menuIdResult
      */
     void saveRoleMenu(String roleId, List<String> menuIdResult);
+
+    /**
+     * 根据角色ID获取菜单ID列表
+     * @param roleId
+     * @return
+     */
+    List<String> getMenuIdsByRoleId(String roleId);
 }
