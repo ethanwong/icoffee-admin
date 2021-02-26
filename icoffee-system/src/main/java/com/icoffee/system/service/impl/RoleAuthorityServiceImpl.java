@@ -27,9 +27,19 @@ public class RoleAuthorityServiceImpl extends MpBaseServiceImpl<RoleAuthorityMap
 
         //保存新数据
         List<RoleAuthority> roleAuthoritys = new ArrayList<>();
-        for(String authId:authIdResult){
-            roleAuthoritys.add(new RoleAuthority(roleId,authId));
+        for (String authId : authIdResult) {
+            roleAuthoritys.add(new RoleAuthority(roleId, authId));
         }
         saveBatch(roleAuthoritys);
+    }
+
+    @Override
+    public List<String> getAuthIdsByRoleId(String roleId) {
+        List<RoleAuthority> list = this.getBaseMapper().selectList(Wrappers.<RoleAuthority>lambdaQuery().eq(RoleAuthority::getRoleId, roleId));
+        List<String> result = new ArrayList<>();
+        for (RoleAuthority roleAuthority : list) {
+            result.add(roleAuthority.getAuthorityId());
+        }
+        return result;
     }
 }

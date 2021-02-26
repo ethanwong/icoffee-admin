@@ -107,4 +107,17 @@ public class UserController {
     }
 
 
+    @AuthorizePoint(name = "修改密码", module = "user")
+    @PutMapping(value = "resetPassword")
+    @ApiOperation(value = "修改密码", notes = "修改密码")
+    public ResultDto resetPassword(@RequestParam String username,@RequestParam String password){
+        if(StringUtils.isBlank(username)){
+            return ResultDto.returnFail("用户名称不能为空");
+        }
+        if(StringUtils.isBlank(password)){
+            return ResultDto.returnFail("密码不能为空");
+        }
+        return userService.resetPassword(username,password);
+    }
+
 }

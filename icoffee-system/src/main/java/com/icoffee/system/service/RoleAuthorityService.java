@@ -19,4 +19,11 @@ public interface RoleAuthorityService extends MpBaseService<RoleAuthority> {
      * @param authIdResult
      */
     void saveRoleAuthority(String roleId, List<String> authIdResult);
+
+    /**
+     * 根据角色ID获取授权ID列表
+     * @param id
+     * @return
+     */
+    List<String> getAuthIdsByRoleId(String id);
 }

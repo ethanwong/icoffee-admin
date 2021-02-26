@@ -5,16 +5,13 @@ import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.icoffee.common.dto.ResultDto;
 import com.icoffee.common.utils.SecurityUtils;
 import com.icoffee.security.config.authentication.JwtProvider;
+import com.icoffee.security.dto.AuthorityDto;
 import com.icoffee.security.dto.LoginResultDto;
 import com.icoffee.security.dto.RouteDto;
 import com.icoffee.security.dto.UserInfoDto;
-import com.icoffee.system.domain.Menu;
-import com.icoffee.system.domain.Role;
-import com.icoffee.system.domain.User;
+import com.icoffee.system.domain.*;
 import com.icoffee.system.dto.LoginUserDto;
-import com.icoffee.system.service.MenuService;
-import com.icoffee.system.service.RoleService;
-import com.icoffee.system.service.UserService;
+import com.icoffee.system.service.*;
 import com.wf.captcha.ArithmeticCaptcha;
 import com.wf.captcha.base.Captcha;
 import com.wf.captcha.utils.CaptchaUtil;
@@ -62,7 +59,11 @@ public class SecurityController {
     @Autowired
     private MenuService menuService;
     @Autowired
-    private com.icoffee.system.service.RoleMenuService roleMenuService;
+    private RoleMenuService roleMenuService;
+    @Autowired
+    private RoleAuthorityService roleAuthorityService;
+    @Autowired
+    private AuthorityService authorityService;
 
     /**
      * 过期时间间隔
@@ -187,12 +188,37 @@ public class SecurityController {
         User user = userService.getByUsername(currentUsername);
 
         Role role = roleService.getRoleById(user.getRoleId());
-
+        userInfoDto.setId(user.getId());
         userInfoDto.setUsername(currentUsername);
-        userInfoDto.getRoles().add(role.getName());
+        userInfoDto.setRealname(user.getRealname());
+        userInfoDto.setEmail(user.getEmail());
+        userInfoDto.setPhoneNumber(user.getPhoneNumber());
         userInfoDto.setAvatar("");
+        userInfoDto.setGender(user.getGender());
+
+        userInfoDto.getRoles().add(role.getName());
         userInfoDto.setRoutes(genUserRoutes(role));
+
+        userInfoDto.setPermissions(getPermissions(role));
+
         return ResultDto.returnSuccessData(userInfoDto);
+    }
+
+    /**
+     * 获取授权信息
+     *
+     * @param role
+     * @return
+     */
+    private List<AuthorityDto> getPermissions(Role role) {
+        List<AuthorityDto> result = new ArrayList<>();
+        List<String> authids = roleAuthorityService.getAuthIdsByRoleId(role.getId());
+        for (String authid : authids) {
+            Authority authority = authorityService.getById(authid);
+            AuthorityDto AuthorityDto = new AuthorityDto(authority.getName(), authority.getUri(), authority.getMethod(), authority.getPermission(), authority.getModule());
+            result.add(AuthorityDto);
+        }
+        return result;
     }
 
     /**

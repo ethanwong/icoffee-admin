@@ -71,4 +71,12 @@ public interface UserService extends MpBaseService<User> {
      * @return
      */
     List<User> getUserListByRoleId(String roleId);
+
+    /**
+     * 修改密码
+     * @param username
+     * @param password
+     * @return
+     */
+    ResultDto resetPassword(String username,String password);
 }

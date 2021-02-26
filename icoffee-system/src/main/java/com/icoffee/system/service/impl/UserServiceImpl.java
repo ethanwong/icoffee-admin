@@ -54,7 +54,6 @@ public class UserServiceImpl extends MpBaseServiceImpl<UserMapper, User> impleme
     @Override
     public ResultDto updateEntity(User user) {
         try {
-
             String username = user.getUsername();
             User userDb = getByUsername(username);
             if (userDb != null && !user.getId().equals(userDb.getId())) {
@@ -95,6 +94,20 @@ public class UserServiceImpl extends MpBaseServiceImpl<UserMapper, User> impleme
     @Override
     public List<User> getUserListByRoleId(String roleId) {
         return getBaseMapper().selectList(Wrappers.<User>lambdaQuery().eq(User::getRoleId, roleId));
+    }
+
+    @Override
+    public ResultDto resetPassword(String username, String password) {
+        try {
+            User userDb = getByUsername(username);
+            userDb.setPassword(passwordEncoder.encode(password));
+            userDb.setUpdateAt(System.currentTimeMillis());
+            saveOrUpdate(userDb);
+            return ResultDto.returnSuccess();
+        } catch (Exception e) {
+            log.error(e);
+            return ResultDto.returnFail(e.getMessage());
+        }
     }
 
 

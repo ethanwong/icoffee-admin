@@ -13,8 +13,44 @@ import java.util.List;
  */
 @Data
 public class UserInfoDto {
+    /**
+     * ID
+     */
+    private String id;
+    /**
+     * 登录账号
+     */
     private String username;
-    private List<String> roles = new ArrayList<>();
+    /**
+     * 真实姓名
+     */
+    private String realname;
+    /**
+     * 头像
+     */
     private String avatar;
+    /**
+     * 性别:1-男，2-女
+     */
+    private Integer gender;
+    /**
+     * 手机号码
+     */
+    private String phoneNumber;
+    /**
+     * 邮箱地址
+     */
+    private String email;
+    /**
+     * 角色信息
+     */
+    private List<String> roles = new ArrayList<>();
+    /**
+     * 路由信息
+     */
     private List<RouteDto> routes;
+    /**
+     * 授权信息
+     */
+    private List<AuthorityDto> permissions;
 }
