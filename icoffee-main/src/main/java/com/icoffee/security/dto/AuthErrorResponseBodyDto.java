@@ -20,11 +20,13 @@ public class AuthErrorResponseBodyDto {
     private Integer status;
     private String code;
     private String message;
+    private TokenType tokenType;
 
-    public AuthErrorResponseBodyDto(Integer status, String code, String message) {
+    public AuthErrorResponseBodyDto(Integer status, String code, String message,TokenType tokenType) {
         this.status = status;
         this.code = code;
         this.message = message;
+        this.tokenType = tokenType;
 
     }
 

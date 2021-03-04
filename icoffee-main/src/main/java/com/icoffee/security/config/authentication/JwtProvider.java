@@ -9,8 +9,10 @@ import com.auth0.jwt.impl.JWTParser;
 import com.auth0.jwt.interfaces.DecodedJWT;
 import com.auth0.jwt.interfaces.Header;
 import com.auth0.jwt.interfaces.Payload;
+import com.icoffee.common.exception.TokenAuthCode;
 import com.icoffee.common.exception.TokenAuthException;
-import com.icoffee.security.dto.RouteDto;
+import com.icoffee.security.dto.TokenDto;
+import com.icoffee.security.dto.TokenType;
 import lombok.extern.log4j.Log4j2;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.logging.log4j.core.util.Assert;
@@ -19,7 +21,6 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 
 import java.util.Date;
-import java.util.List;
 import java.util.UUID;
 
 /**
@@ -54,17 +55,44 @@ public class JwtProvider {
     private String SECRETKEY;
 
     /**
+     * 生成accessToken
+     *
+     * @param username
+     * @return
+     */
+    public TokenDto createAccessToken(String username) throws JWTCreationException {
+        //设置过期时间
+        Date expiresAt = new Date();
+        expiresAt.setTime(System.currentTimeMillis() + EXPIRES);
+        String token = this.createToken(username, expiresAt, TokenType.ACCESS.toString());
+        return new TokenDto(token, expiresAt);
+    }
+
+    /**
+     * 生成refreshToken
+     *
+     * @param username
+     * @return
+     */
+    public TokenDto createRefreshToken(String username) throws JWTCreationException {
+        //将refreshToken的过期时间设置为accessToken的两倍
+        //设置过期时间
+        Date expiresAt = new Date();
+        expiresAt.setTime(System.currentTimeMillis() + EXPIRES * 2);
+        String token = this.createToken(username, expiresAt, TokenType.REFRESH.toString());
+        return new TokenDto(token, expiresAt);
+    }
+
+    /**
      * 创建token
      *
      * @param username
-     * @param permissionDtoList
+     * @param expiresAt
      * @return
      */
-    public String createToken(String username, List<RouteDto> permissionDtoList) throws JWTCreationException {
+    private String createToken(String username, Date expiresAt, String type) throws JWTCreationException {
         try {
-            Date expiresAt = new Date();
-            //设置过期时间
-            expiresAt.setTime(System.currentTimeMillis() + EXPIRES);
+
             Algorithm algorithm = Algorithm.HMAC256(SECRETKEY);
             JWTCreator.Builder tokenBuilder = JWT.create()
                     //"Issuer —— 用于说明该JWT是由谁签发的"
@@ -78,10 +106,9 @@ public class JwtProvider {
                     //"JWT ID —— 说明标明JWT的唯一ID"
                     .withJWTId(UUID.randomUUID().toString())
                     .withClaim("username", username)
-                    .withClaim("permission", permissionDtoList);
+                    .withClaim("type", type);
 
             String token = tokenBuilder.sign(algorithm);
-//            log.info("createToken token={}", token);
             return token;
         } catch (JWTCreationException exception) {
             log.error("createToken error", exception);
@@ -107,16 +134,16 @@ public class JwtProvider {
             return verifier.verify(token);
         } catch (SignatureVerificationException exception) {
             //"token签名不匹配"
-            throw new TokenAuthException(exception.getMessage());
+            throw new TokenAuthException(TokenAuthCode.SignatureVerification, exception.getMessage());
         } catch (TokenExpiredException exception) {
             //"token已经过期！"
-            throw new TokenAuthException(exception.getMessage());
+            throw new TokenAuthException(TokenAuthCode.TokenExpired, exception.getMessage());
         } catch (InvalidClaimException exception) {
             //"token无效！"
-            throw new TokenAuthException(exception.getMessage());
+            throw new TokenAuthException(TokenAuthCode.InvalidClaim, exception.getMessage());
         } catch (JWTVerificationException exception) {
             //"token校验异常"
-            throw new TokenAuthException(exception.getMessage());
+            throw new TokenAuthException(TokenAuthCode.JWTVerification, exception.getMessage());
         }
     }
 

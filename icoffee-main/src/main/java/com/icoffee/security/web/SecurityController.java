@@ -1,15 +1,14 @@
 package com.icoffee.security.web;
 
-import cn.hutool.core.date.DateUtil;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.icoffee.common.dto.ResultDto;
 import com.icoffee.common.utils.SecurityUtils;
 import com.icoffee.security.config.authentication.JwtProvider;
-import com.icoffee.security.dto.AuthorityDto;
-import com.icoffee.security.dto.LoginResultDto;
-import com.icoffee.security.dto.RouteDto;
-import com.icoffee.security.dto.UserInfoDto;
-import com.icoffee.system.domain.*;
+import com.icoffee.security.dto.*;
+import com.icoffee.system.domain.Authority;
+import com.icoffee.system.domain.Menu;
+import com.icoffee.system.domain.Role;
+import com.icoffee.system.domain.User;
 import com.icoffee.system.dto.LoginUserDto;
 import com.icoffee.system.service.*;
 import com.wf.captcha.ArithmeticCaptcha;
@@ -32,7 +31,10 @@ import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 /**
  * @Name SecurityController
@@ -101,17 +103,15 @@ public class SecurityController {
             Authentication authentication = authenticationManagerBuilder.getObject().authenticate(authenticationToken);
             SecurityContextHolder.getContext().setAuthentication(authentication);
 
-
             //生成TOKEN
-            List<RouteDto> permissionList = new ArrayList<>();
-            String token = jwtTokenProvider.createToken(loginUserDto.getUsername(), permissionList);
+            TokenDto accessToken = jwtTokenProvider.createAccessToken(loginUserDto.getUsername());
+            TokenDto refreshToken = jwtTokenProvider.createRefreshToken(loginUserDto.getUsername());
+
 
             LoginResultDto loginResultDto = new LoginResultDto();
             loginResultDto.setUsername(loginUserDto.getUsername());
-            loginResultDto.setExpireAt(DateUtil.offsetSecond(new Date(), EXPIRES / 1000));
-            loginResultDto.setRole("");
-            loginResultDto.setPermissionList(permissionList);
-            loginResultDto.setToken(token);
+            loginResultDto.setAccessToken(accessToken);
+            loginResultDto.setRefreshToken(refreshToken);
 
             return ResultDto.returnSuccessMessageData("登录成功！", loginResultDto);
         } catch (Exception e) {
@@ -120,6 +120,27 @@ public class SecurityController {
         }
 
     }
+
+    @ApiOperation(value = "刷新token重新登录", notes = "")
+    @PostMapping("/refreshToken")
+    public ResultDto refreshToken(HttpServletRequest request){
+
+        //获取用户名称
+        String username = SecurityUtils.getCurrentUsername();
+
+        //生成TOKEN
+        TokenDto accessToken = jwtTokenProvider.createAccessToken(username);
+        TokenDto refreshToken = jwtTokenProvider.createRefreshToken(username);
+
+
+        LoginResultDto loginResultDto = new LoginResultDto();
+        loginResultDto.setUsername(username);
+        loginResultDto.setAccessToken(accessToken);
+        loginResultDto.setRefreshToken(refreshToken);
+
+        return ResultDto.returnSuccessMessageData("重新登录成功！", loginResultDto);
+    }
+
 
     /**
      * 退出登录
@@ -180,6 +201,7 @@ public class SecurityController {
         return CaptchaUtil.ver(captcha, request);
     }
 
+
     @ApiOperation(value = "获取用户信息", notes = "")
     @GetMapping("/user")
     public ResultDto getUserInfo() {
@@ -195,10 +217,11 @@ public class SecurityController {
         userInfoDto.setPhoneNumber(user.getPhoneNumber());
         userInfoDto.setAvatar("");
         userInfoDto.setGender(user.getGender());
-
         userInfoDto.getRoles().add(role.getName());
-        userInfoDto.setRoutes(genUserRoutes(role));
 
+        //获取路由信息
+        userInfoDto.setRoutes(getUserRoutes(role));
+        //获取权限信息
         userInfoDto.setPermissions(getPermissions(role));
 
         return ResultDto.returnSuccessData(userInfoDto);
@@ -226,7 +249,7 @@ public class SecurityController {
      *
      * @return
      */
-    private List<RouteDto> genUserRoutes(Role role) {
+    private List<RouteDto> getUserRoutes(Role role) {
         List<RouteDto> routes = new ArrayList<>();
         //跟级菜单
         QueryWrapper<Menu> queryWrapper = new QueryWrapper<>();
@@ -260,7 +283,34 @@ public class SecurityController {
                 }
                 setChildrenRoute(child, children, checkMenuIds, filterMenu);
             }
-            routes.add(new RouteDto(rootMenu.getModuleName(), rootMenu.getRoutePath(), rootMenu.getComponentPath(), meta, children, rootMenu.getHidden()));
+            RouteDto rootRouteDto = new RouteDto(rootMenu.getModuleName(), rootMenu.getRoutePath(), rootMenu.getComponentPath(), meta, children, rootMenu.getHidden());
+            routes.add(rootRouteDto);
+
+            //判断跟级路径是否路由重定向,根据vue路由格式要求，对带重定向参数的跟级别目录进行处理
+            if(rootMenu.isRedirect()){
+                //重定向的目标路径和组件的相对路径
+                String redirect = rootMenu.getRoutePath();
+                if(redirect.startsWith("/")){
+                    redirect = redirect.substring(1);
+                }
+                boolean isInclude = false;
+                for(RouteDto child:rootRouteDto.getChildren()){
+                    if(child.getPath().equals(redirect)){
+                        isInclude = true;
+                        break;
+                    }
+                }
+
+                if(!isInclude){
+                    //不包含name参数
+                    rootRouteDto.setName(null);
+                    //不包含meta参数
+                    rootRouteDto.setMeta(null);
+                    //path路径为空
+                    rootRouteDto.setPath("");
+                    rootRouteDto.getChildren().add(new RouteDto(rootMenu.getModuleName(),redirect,redirect,meta,null, rootMenu.getHidden()));
+                }
+            }
         }
 
         return routes;

@@ -5,7 +5,7 @@ jwt:
     secretKey: 088c49f786894126870318483b4fff7d
     headerName: Authorization
     bearerPrefix: Bearer
-    expires: 43200000    #毫秒为单位，此处设置为12小时，默认为30分钟
+    expires: 60000    #毫秒为单位，此处设置为2分钟，默认为30分钟
     issuer: icoffee-admin #签发者
     audience:  icoffee-client #签发给谁
 mysql:

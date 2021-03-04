@@ -2,8 +2,7 @@ package com.icoffee.security.dto;
 
 import lombok.Data;
 
-import java.util.Date;
-import java.util.List;
+import java.util.UUID;
 
 /**
  * @Name LoginResultDto
@@ -13,9 +12,8 @@ import java.util.List;
  */
 @Data
 public class LoginResultDto {
+    private String uuid = UUID.randomUUID().toString().replace("-", "");
     private String username;
-    private String role;
-    private String token;
-    private Date expireAt;
-    private List<RouteDto> permissionList;
+    private TokenDto accessToken;
+    private TokenDto refreshToken;
 }

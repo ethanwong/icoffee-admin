@@ -58,6 +58,11 @@ public class Menu extends BaseDomain implements Serializable, Cloneable {
     private String componentPath = "Layout";
 
     /**
+     * 重定向地址
+     */
+    private boolean redirect = false;
+
+    /**
      * 排序
      */
     private Integer orderNo = 1;
@@ -67,11 +72,6 @@ public class Menu extends BaseDomain implements Serializable, Cloneable {
      */
     private Boolean hidden = true;
 
-
-    /**
-     * 是否跳转网址,默认为否
-     */
-    private Boolean redirect = false;
     /**
      * 上级ID
      */
