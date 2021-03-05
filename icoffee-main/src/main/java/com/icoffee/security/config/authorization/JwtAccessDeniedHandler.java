@@ -1,5 +1,6 @@
 package com.icoffee.security.config.authorization;
 
+import lombok.extern.log4j.Log4j2;
 import org.springframework.security.access.AccessDeniedException;
 import org.springframework.security.web.access.AccessDeniedHandler;
 
@@ -14,9 +15,11 @@ import java.io.IOException;
  * @Author huangyingfeng
  * @Create 2021-01-27 16:54
  */
+@Log4j2
 public class JwtAccessDeniedHandler implements AccessDeniedHandler {
     @Override
     public void handle(HttpServletRequest request, HttpServletResponse response, AccessDeniedException accessDeniedException) throws IOException, ServletException {
+        log.error(accessDeniedException);
         //当用户在没有授权的情况下访问受保护的REST资源时，将调用此方法发送403 Forbidden响应
         response.setStatus(HttpServletResponse.SC_FORBIDDEN);
         response.getWriter().write(accessDeniedException == null ? "Forbidden" : accessDeniedException.getMessage());
