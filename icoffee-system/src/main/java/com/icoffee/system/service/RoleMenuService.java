@@ -13,6 +13,7 @@ import java.util.List;
  * @Create 2020-02-25 9:05
  */
 public interface RoleMenuService extends MpBaseService<RoleMenu> {
+
     /**
      * 保存角色菜单信息
      * @param roleId

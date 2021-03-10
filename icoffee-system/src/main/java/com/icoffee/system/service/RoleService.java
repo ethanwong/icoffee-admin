@@ -21,7 +21,7 @@ public interface RoleService extends MpBaseService<Role> {
      * @param role 角色实体
      * @return
      */
-    ResultDto saveEntity(Role role);
+    ResultDto saveRole(Role role);
 
     /**
      * 修改角色
@@ -29,7 +29,7 @@ public interface RoleService extends MpBaseService<Role> {
      * @param role 角色实体
      * @return
      */
-    ResultDto updateEntity(Role role);
+    ResultDto updateRole(Role role);
 
     /**
      * 删除角色

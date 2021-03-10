@@ -57,7 +57,6 @@ public class SecurityController {
 
     @Autowired
     private JwtProvider jwtTokenProvider;
-
     @Autowired
     private UserService userService;
     @Autowired
@@ -85,15 +84,7 @@ public class SecurityController {
     @Value("${security.rsa.private_key}")
     private String PRIMARYKEY;
 
-    /**
-     * 用户登录
-     *
-     * @param request
-     * @param loginUserDto
-     * @param bindingResult
-     * @return
-     */
-    @ApiOperation(value = "登录", notes = "提交用户名、密码、验证码进行登录")
+    @ApiOperation(value = "用户登录", notes = "提交用户名、密码、验证码进行登录")
     @PostMapping("login")
     public ResultDto login(HttpServletRequest request, @Validated @RequestBody LoginUserDto loginUserDto, BindingResult bindingResult) throws Exception {
         // 密码解密
@@ -131,7 +122,7 @@ public class SecurityController {
 
     }
 
-    @ApiOperation(value = "刷新token重新登录", notes = "")
+    @ApiOperation(value = "刷新token", notes = "刷新token重新登录")
     @PostMapping("/refreshToken")
     public ResultDto refreshToken(HttpServletRequest request) {
 
@@ -151,13 +142,6 @@ public class SecurityController {
         return ResultDto.returnSuccessMessageData("重新登录成功！", loginResultDto);
     }
 
-
-    /**
-     * 退出登录
-     *
-     * @param request
-     * @return
-     */
     @ApiOperation(value = "退出登录", notes = "")
     @PostMapping("logout")
     public ResultDto logout(HttpServletRequest request) {
@@ -165,13 +149,6 @@ public class SecurityController {
         return ResultDto.returnSuccess();
     }
 
-    /**
-     * 获取验证码
-     *
-     * @param request
-     * @param response
-     * @throws Exception
-     */
     @ApiOperation(value = "获取验证码", notes = "")
     @GetMapping("/captcha")
     public ResponseEntity<Object> captcha(HttpServletRequest request, HttpServletResponse response) throws Exception {
@@ -194,14 +171,6 @@ public class SecurityController {
         return ResponseEntity.ok(imgResult);
     }
 
-    /**
-     * 校验验证码
-     *
-     * @param request
-     * @param response
-     * @param captcha
-     * @return
-     */
     @ApiOperation(value = "校验验证码", notes = "")
     @GetMapping("/captcha/check/{captcha}")
     public boolean check(HttpServletRequest request, HttpServletResponse response, @PathVariable String captcha) {
@@ -211,11 +180,7 @@ public class SecurityController {
         return CaptchaUtil.ver(captcha, request);
     }
 
-    /**
-     * 获取用户信息
-     *
-     * @return
-     */
+
     @ApiOperation(value = "获取用户信息", notes = "")
     @GetMapping("/user")
     public ResultDto getUserInfo() {
@@ -346,6 +311,4 @@ public class SecurityController {
         }
         children.add(new RouteDto(child.getModuleName(), child.getRoutePath(), child.getComponentPath(), childMeta, subChildren, child.getHidden()));
     }
-
-
 }

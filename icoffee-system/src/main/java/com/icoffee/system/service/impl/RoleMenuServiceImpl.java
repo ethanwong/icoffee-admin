@@ -38,7 +38,7 @@ public class RoleMenuServiceImpl extends MpBaseServiceImpl<RoleMenuMapper, RoleM
     public List<String> getMenuIdsByRoleId(String roleId) {
         List<RoleMenu> list = this.getBaseMapper().selectList(Wrappers.<RoleMenu>lambdaQuery().eq(RoleMenu::getRoleId, roleId));
         List<String> result = new ArrayList<>();
-        for(RoleMenu roleMenu:list){
+        for (RoleMenu roleMenu : list) {
             result.add(roleMenu.getMenuId());
         }
         return result;

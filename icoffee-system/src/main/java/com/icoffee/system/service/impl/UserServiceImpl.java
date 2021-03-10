@@ -13,6 +13,7 @@ import com.icoffee.system.service.UserService;
 import lombok.extern.log4j.Log4j2;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
@@ -36,6 +37,12 @@ public class UserServiceImpl extends MpBaseServiceImpl<UserMapper, User> impleme
     @Autowired
     private AuthorityService authorityService;
 
+    /**
+     * 用户默认密码
+     */
+    @Value("${security.defaultPassword}")
+    private String DEFAULTPASSWORD;
+
 
     @Override
     public User getByUsername(String username) {
@@ -43,13 +50,13 @@ public class UserServiceImpl extends MpBaseServiceImpl<UserMapper, User> impleme
     }
 
     @Override
-    public ResultDto saveEntity(User user) {
+    public ResultDto saveUser(User user) {
         try {
             if (existsUsername(user.getUsername())) {
                 return ResultDto.returnFail("账号已存在");
             }
             if (StringUtils.isBlank(user.getPassword())) {
-                user.setPassword("123456");
+                user.setPassword(DEFAULTPASSWORD);
             }
             user.setPassword(passwordEncoder.encode(user.getPassword()));
             save(user);
@@ -61,7 +68,7 @@ public class UserServiceImpl extends MpBaseServiceImpl<UserMapper, User> impleme
     }
 
     @Override
-    public ResultDto updateEntity(User user) {
+    public ResultDto updateUser(User user) {
         try {
             String username = user.getUsername();
             User userDb = getByUsername(username);

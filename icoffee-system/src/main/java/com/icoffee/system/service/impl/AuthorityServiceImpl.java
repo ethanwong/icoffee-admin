@@ -6,10 +6,7 @@ import com.icoffee.common.service.MpBaseServiceImpl;
 import com.icoffee.system.domain.Authority;
 import com.icoffee.system.mapper.AuthorityMapper;
 import com.icoffee.system.service.AuthorityService;
-import com.icoffee.system.service.MenuService;
-import com.icoffee.system.service.RoleAuthorityService;
 import lombok.extern.log4j.Log4j2;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
@@ -24,11 +21,6 @@ import java.util.List;
 @Service
 @Log4j2
 public class AuthorityServiceImpl extends MpBaseServiceImpl<AuthorityMapper, Authority> implements AuthorityService {
-
-    @Autowired
-    private MenuService menuService;
-    @Autowired
-    private RoleAuthorityService roleAuthorityService;
 
     @Override
     public ResultDto batchSaveAuthorityList(List<Authority> authorityList) {
@@ -56,6 +48,6 @@ public class AuthorityServiceImpl extends MpBaseServiceImpl<AuthorityMapper, Aut
 
     @Override
     public List<Authority> getByModule(String module) {
-        return getBaseMapper().selectList(Wrappers.<Authority>lambdaQuery().eq(Authority::getModule,module));
+        return getBaseMapper().selectList(Wrappers.<Authority>lambdaQuery().eq(Authority::getModule, module));
     }
 }

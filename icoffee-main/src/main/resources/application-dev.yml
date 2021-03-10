@@ -7,14 +7,16 @@ jwt:
     bearerPrefix: Bearer
     expires: 180000    #毫秒为单位，默认为30分钟
     issuer: icoffee-admin #签发者
-    audience:  icoffee-client #签发给谁
+    audience: icoffee-client #签发给谁
 mysql:
   url: jdbc:mysql://127.0.0.1:3306/icoffee_admin?useUnicode=true&characterEncoding=UTF-8&autoReconnect=true&useSSL=false&zeroDateTimeBehavior=convertToNull&serverTimezone=UTC
   username: root
   password: 123456
 security:
   login:
-    captcha: false #登录是否检查验证码
+    captcha: true #登录是否检查验证码
+  defaultPassword: 123456 #默认用户密码
+
   #密码加密传输，前端公钥加密，后端私钥解密
   rsa:
     private_key: MIIBUwIBADANBgkqhkiG9w0BAQEFAASCAT0wggE5AgEAAkEA0vfvyTdGJkdbHkB8mp0f3FE0GYP3AYPaJF7jUd1M0XxFSE2ceK3k2kw20YvQ09NJKk+OMjWQl9WitG9pB6tSCQIDAQABAkA2SimBrWC2/wvauBuYqjCFwLvYiRYqZKThUS3MZlebXJiLB+Ue/gUifAAKIg1avttUZsHBHrop4qfJCwAI0+YRAiEA+W3NK/RaXtnRqmoUUkb59zsZUBLpvZgQPfj1MhyHDz0CIQDYhsAhPJ3mgS64NbUZmGWuuNKp5coY2GIj/zYDMJp6vQIgUueLFXv/eZ1ekgz2Oi67MNCk5jeTF2BurZqNLR3MSmUCIFT3Q6uHMtsB9Eha4u7hS31tj1UWE+D+ADzp59MGnoftAiBeHT7gDMuqeJHPL4b+kC+gzV4FGTfhR9q3tTbklZkD2A==

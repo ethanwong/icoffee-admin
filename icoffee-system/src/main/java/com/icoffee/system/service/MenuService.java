@@ -45,7 +45,7 @@ public interface MenuService extends MpBaseService<Menu> {
      * @param menu 实体
      * @return
      */
-    ResultDto saveEntity(Menu menu);
+    ResultDto saveMenu(Menu menu);
 
     /**
      * 修改
@@ -53,7 +53,7 @@ public interface MenuService extends MpBaseService<Menu> {
      * @param menu 实体
      * @return
      */
-    ResultDto updateEntity(Menu menu);
+    ResultDto updateMenu(Menu menu);
 
     /**
      * 删除

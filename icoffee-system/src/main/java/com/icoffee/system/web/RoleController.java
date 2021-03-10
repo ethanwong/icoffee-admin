@@ -43,14 +43,14 @@ public class RoleController {
     @ApiOperation(value = "新增角色", notes = "新增角色")
     @PostMapping(value = "")
     public ResultDto create(HttpServletRequest request, @RequestBody Role role) {
-        return roleService.saveEntity(role);
+        return roleService.saveRole(role);
     }
 
     @AuthorizePoint(name = "修改角色", module = "role")
     @ApiOperation(value = "修改角色", notes = "修改角色")
     @PutMapping(value = "")
     public ResultDto update(HttpServletRequest request, @RequestBody Role role) {
-        return roleService.updateEntity(role);
+        return roleService.updateRole(role);
     }
 
     @AuthorizePoint(name = "根据ID查询角色", module = "role")

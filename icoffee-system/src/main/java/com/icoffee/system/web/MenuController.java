@@ -39,18 +39,18 @@ public class MenuController {
         return ResultDto.returnSuccessData(pageDTO);
     }
 
-    @AuthorizePoint(name = "菜单分页", module = "menu")
+    @AuthorizePoint(name = "添加菜单", module = "menu")
     @ApiOperation(value = "创建", notes = "")
     @PostMapping(value = "")
     public ResultDto create(@Validated @RequestBody Menu menu) {
-        return menuService.saveEntity(menu);
+        return menuService.saveMenu(menu);
     }
 
     @AuthorizePoint(name = "更新菜单", module = "menu")
     @ApiOperation(value = "更新", notes = "")
     @PutMapping(value = "")
     public ResultDto update(@Validated @RequestBody  Menu menu) {
-        return menuService.updateEntity(menu);
+        return menuService.updateMenu(menu);
     }
 
     @AuthorizePoint(name = "删除菜单", module = "menu")
@@ -85,7 +85,4 @@ public class MenuController {
         }
         return menuService.getTree(parentId);
     }
-
-
-
 }

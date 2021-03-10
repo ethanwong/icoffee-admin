@@ -10,10 +10,8 @@ import com.icoffee.system.domain.Menu;
 import com.icoffee.system.domain.RoleMenu;
 import com.icoffee.system.dto.ElTreeDto;
 import com.icoffee.system.mapper.MenuMapper;
-import com.icoffee.system.service.AuthorityService;
 import com.icoffee.system.service.MenuService;
 import com.icoffee.system.service.RoleMenuService;
-import com.icoffee.system.service.UserService;
 import lombok.extern.log4j.Log4j2;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -34,10 +32,6 @@ public class MenuServiceImpl extends MpBaseServiceImpl<MenuMapper, Menu> impleme
 
     @Autowired
     private RoleMenuService roleMenuService;
-    @Autowired
-    private UserService accountService;
-    @Autowired
-    private AuthorityService authorityService;
     @Autowired
     private MenuService menuService;
 
@@ -104,7 +98,6 @@ public class MenuServiceImpl extends MpBaseServiceImpl<MenuMapper, Menu> impleme
         queryWrapper.eq("parent_id", parentId);
         queryWrapper.orderByAsc("order_no");
 
-//        List<Menu> rootMenuList = menuService.getRootMenuList(queryWrapper);
         List<Menu> rootMenuList = getMenuByParentId(queryWrapper);
         for (Menu menu : rootMenuList) {
             ElTreeDto elTreeDto = new ElTreeDto();
@@ -193,7 +186,7 @@ public class MenuServiceImpl extends MpBaseServiceImpl<MenuMapper, Menu> impleme
     }
 
     @Override
-    public ResultDto saveEntity(Menu menu) {
+    public ResultDto saveMenu(Menu menu) {
         try {
             if (existsName(menu.getTitle(), null)) {
                 return ResultDto.returnFail("名称重复：" + menu.getTitle());
@@ -220,7 +213,7 @@ public class MenuServiceImpl extends MpBaseServiceImpl<MenuMapper, Menu> impleme
 
 
     @Override
-    public ResultDto updateEntity(Menu menu) {
+    public ResultDto updateMenu(Menu menu) {
         try {
             if (existsName(menu.getTitle(), menu.getId())) {
                 return ResultDto.returnFail("名称重复：" + menu.getTitle());
@@ -270,7 +263,7 @@ public class MenuServiceImpl extends MpBaseServiceImpl<MenuMapper, Menu> impleme
     @Override
     public PageDto<Menu> findPage(int pageNo, int pageSize) {
         QueryWrapper<Menu> queryWrapper = new QueryWrapper<>();
-        queryWrapper.orderByDesc("create_at","order_no");
+        queryWrapper.orderByDesc("create_at", "order_no");
         return selectPage(queryWrapper, pageNo, pageSize);
     }
 

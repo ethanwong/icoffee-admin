@@ -37,7 +37,7 @@ public class RoleServiceImpl extends MpBaseServiceImpl<RoleMapper, Role> impleme
     private UserService userService;
 
     @Override
-    public ResultDto saveEntity(Role role) {
+    public ResultDto saveRole(Role role) {
         try {
 
             Role checkRole = getBaseMapper().selectOne(Wrappers.<Role>lambdaQuery().eq(Role::getName, role.getName()));
@@ -55,11 +55,9 @@ public class RoleServiceImpl extends MpBaseServiceImpl<RoleMapper, Role> impleme
     }
 
     @Override
-    public ResultDto updateEntity(Role role) {
+    public ResultDto updateRole(Role role) {
         try {
-
             Role checkRole = getBaseMapper().selectOne(Wrappers.<Role>lambdaQuery().eq(Role::getName, role.getName()));
-
             if (checkRole != null && !checkRole.getId().equals(role.getId())) {
                 return ResultDto.returnFail("角色已存在");
             }
@@ -75,20 +73,16 @@ public class RoleServiceImpl extends MpBaseServiceImpl<RoleMapper, Role> impleme
 
     @Override
     public ResultDto deleteRoleById(String id) {
-
         //判断角色是否关用户
         List<User> userList = userService.getUserListByRoleId(id);
         if (userList != null && !userList.isEmpty()) {
-
             List<String> nameList = new ArrayList<>();
             for (User user : userList) {
                 nameList.add(user.getUsername());
             }
             ResultDto.returnFail("删除错误，角色被如下用户关联：" + nameList.toString());
         }
-
         this.removeById(id);
-
         return ResultDto.returnSuccess();
     }
 
@@ -96,8 +90,6 @@ public class RoleServiceImpl extends MpBaseServiceImpl<RoleMapper, Role> impleme
     @Override
     public ResultDto setRoleAuth(RoleMenuAuthDto roleMenuAuthDto) {
         try {
-
-
             /**
              * 角色ID
              */
@@ -105,20 +97,18 @@ public class RoleServiceImpl extends MpBaseServiceImpl<RoleMapper, Role> impleme
             List<String> menuIds = roleMenuAuthDto.getMenuIds();
             List<String> authIds = roleMenuAuthDto.getAuthIds();
 
-
             /**
              * 更新角色信息
              */
-            Role role  = this.getById(roleId);
+            Role role = this.getById(roleId);
 
             role.setMenuIds(String.join(",", menuIds));
             role.setAuthIds(String.join(",", authIds));
-            updateEntity(role);
+            updateRole(role);
 
             /**
              * 根据前端选择的菜单和授权生成角色所有关联的菜单和授权信息
              */
-
             /**
              * 菜单
              */
@@ -200,20 +190,7 @@ public class RoleServiceImpl extends MpBaseServiceImpl<RoleMapper, Role> impleme
 
     @Override
     public Role getRoleById(String id) {
-        Role role = getById(id);
-
-        List<RoleMenu> list = roleMenuService.getBaseMapper().selectList(Wrappers.<RoleMenu>lambdaQuery().eq(RoleMenu::getRoleId, id));
-
-//        for (RoleMenu roleMenu : list) {
-//            role.getMenuIds().add(roleMenu.getMenuId());
-//        }
-//
-//        List<RoleAuthority> authList = roleAuthorityService.getBaseMapper().selectList(Wrappers.<RoleAuthority>lambdaQuery().eq(RoleAuthority::getRoleId, id));
-//        for (RoleAuthority roleAuthority : authList) {
-//            role.getAuthIds().add(roleAuthority.getAuthorityId());
-//        }
-
-        return role;
+        return getById(id);
     }
 
     private void setChildAuthId(List<String> authIdTemp, Menu menu) {
@@ -250,6 +227,4 @@ public class RoleServiceImpl extends MpBaseServiceImpl<RoleMapper, Role> impleme
             setParentId(result, menu.getParent());
         }
     }
-
-
 }

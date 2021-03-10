@@ -20,6 +20,7 @@ import java.util.List;
 @Service
 @Log4j2
 public class RoleAuthorityServiceImpl extends MpBaseServiceImpl<RoleAuthorityMapper, RoleAuthority> implements RoleAuthorityService {
+
     @Override
     public void saveRoleAuthority(String roleId, List<String> authIdResult) {
         //先移除旧数据

@@ -51,7 +51,6 @@ public class AuthorityController {
         String moduleName = request.getParameter("search_EQ_module");
         String name = request.getParameter("search_LIKE_name");
 
-
         if (StringUtils.isNotBlank(moduleName)) {
             Menu menu = menuService.getMenuByModuleName(moduleName);
             List<String> modules = new ArrayList<>();

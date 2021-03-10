@@ -30,7 +30,7 @@ public interface UserService extends MpBaseService<User> {
      * @param userDO 实体
      * @return
      */
-    ResultDto saveEntity(User userDO);
+    ResultDto saveUser(User userDO);
 
     /**
      * 更新对象
@@ -38,7 +38,7 @@ public interface UserService extends MpBaseService<User> {
      * @param userDO 实体
      * @return
      */
-    ResultDto updateEntity(User userDO);
+    ResultDto updateUser(User userDO);
 
     /**
      * 根据用户角色获取用户信息
