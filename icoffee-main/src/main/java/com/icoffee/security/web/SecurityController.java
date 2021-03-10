@@ -126,7 +126,7 @@ public class SecurityController {
             return ResultDto.returnSuccessMessageData("登录成功！", loginResultDto);
         } catch (Exception e) {
             log.error("login error", e);
-            return ResultDto.returnFail("账号或者密码错误!");
+            return ResultDto.returnFail(e.getMessage());
         }
 
     }

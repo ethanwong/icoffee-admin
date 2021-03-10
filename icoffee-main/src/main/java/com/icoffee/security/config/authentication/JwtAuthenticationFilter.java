@@ -81,7 +81,7 @@ public class JwtAuthenticationFilter extends GenericFilterBean {
                 payload = jwtTokenProvider.decodeTokenPayload(token);
                 tokenType = TokenType.valueOf(payload.getClaim("type").asString());
             } catch (Exception e) {
-                log.error(e);
+                log.error(e.getMessage());
             }
 
             //校验token是否合法
@@ -89,7 +89,7 @@ public class JwtAuthenticationFilter extends GenericFilterBean {
             try {
                 decodedJWT = jwtTokenProvider.verifyToken(token, JWT_SECRET_KEY);
             } catch (TokenAuthException e) {
-                log.info(e);
+                log.error(e.getMessage());
                 //捕获token校验失败异常
                 httpServletResponse.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
                 httpServletResponse.setContentType("application/json;charset:utf-8");
@@ -112,7 +112,7 @@ public class JwtAuthenticationFilter extends GenericFilterBean {
         try {
             chain.doFilter(request, response);
         } catch (AccessDeniedException e) {
-            log.info(e);
+            log.error(e.getMessage());
             //捕获无访问权限异常
             httpServletResponse.setStatus(HttpServletResponse.SC_FORBIDDEN);
             httpServletResponse.setContentType("application/json;charset:utf-8");
@@ -121,7 +121,7 @@ public class JwtAuthenticationFilter extends GenericFilterBean {
             httpServletResponse.getWriter().write(errorResponseBodyDto.toJson());
             return;
         } catch (AuthenticationCredentialsNotFoundException e) {
-            log.info(e);
+            log.error(e.getMessage());
             //捕获Header头没有Authentication参数
             httpServletResponse.setStatus(HttpServletResponse.SC_FORBIDDEN);
             httpServletResponse.setContentType("application/json;charset:utf-8");

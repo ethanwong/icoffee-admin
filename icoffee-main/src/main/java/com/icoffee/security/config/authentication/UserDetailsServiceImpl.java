@@ -55,7 +55,12 @@ public class UserDetailsServiceImpl implements UserDetailsService {
             }
 
             String password = userDto.getPassword();
-            return new org.springframework.security.core.userdetails.User(username, password, authorities);
+
+//            String username, String password, boolean enabled, boolean accountNonExpired,
+//            boolean credentialsNonExpired, boolean accountNonLocked,
+//            Collection<? extends GrantedAuthority> authorities
+
+            return new org.springframework.security.core.userdetails.User(username, password, true, true, true, !userDto.getLocked(), authorities);
         }
     }
 }
