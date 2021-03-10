@@ -1,6 +1,7 @@
 package com.icoffee.system.service;
 
 
+import com.icoffee.common.dto.AuthorityDto;
 import com.icoffee.common.dto.ResultDto;
 import com.icoffee.common.service.MpBaseService;
 import com.icoffee.system.domain.User;
@@ -40,33 +41,8 @@ public interface UserService extends MpBaseService<User> {
     ResultDto updateEntity(User userDO);
 
     /**
-     * 更新基础信息
-     *
-     * @param realname    真实名称
-     * @param email       邮箱
-     * @param phoneNumber 电话
-     * @return
-     */
-    ResultDto update(String realname, String email, String phoneNumber) throws Exception;
-
-    /**
-     * 修改密码
-     *
-     * @param oldPwd 旧密码
-     * @param newPwd 新密码
-     * @return
-     */
-    ResultDto resetPwd(String oldPwd, String newPwd) throws Exception;
-
-    /**
-     * 改变用户锁定状态
-     *
-     * @param id 主键
-     */
-    ResultDto changeLocked(String id) throws Exception;
-
-    /**
      * 根据用户角色获取用户信息
+     *
      * @param roleId
      * @return
      */
@@ -74,9 +50,18 @@ public interface UserService extends MpBaseService<User> {
 
     /**
      * 修改密码
+     *
      * @param username
      * @param password
      * @return
      */
-    ResultDto resetPassword(String username,String password);
+    ResultDto resetPassword(String username, String password);
+
+    /**
+     * 获取用户授权信息
+     *
+     * @param roleId
+     * @return
+     */
+    List<AuthorityDto> getUserGrantedAuthorities(String roleId);
 }

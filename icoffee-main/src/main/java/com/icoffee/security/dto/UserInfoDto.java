@@ -1,5 +1,6 @@
 package com.icoffee.security.dto;
 
+import com.icoffee.common.dto.AuthorityDto;
 import lombok.Data;
 
 import java.util.ArrayList;

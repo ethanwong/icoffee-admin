@@ -1,5 +1,8 @@
 package com.icoffee.security.config.authorization;
 
+import com.icoffee.system.domain.Authority;
+import com.icoffee.system.service.AuthorityService;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.access.ConfigAttribute;
 import org.springframework.security.access.SecurityConfig;
 import org.springframework.security.web.FilterInvocation;
@@ -22,23 +25,24 @@ import java.util.*;
 public class InvocationSecurityMetadataSource implements FilterInvocationSecurityMetadataSource {
 
     private static Map<String, Collection<ConfigAttribute>> resourceMap = null;
+    @Autowired
+    private AuthorityService authorityService;
 
     /**
      * 加载系统全局鉴权资源
      */
     @PostConstruct
     private void loadResourceDefine() {
+
+        List<Authority> allAuthority = (List<Authority>) authorityService.selectAll().getData();
         if (resourceMap == null) {
             resourceMap = new HashMap<>();
-            Collection<ConfigAttribute> configAttributes = new ArrayList<>();
-            ConfigAttribute configAttribute = new SecurityConfig("auth:admin");
-            configAttributes.add(configAttribute);
-            resourceMap.put("/api/auth/admin#GET", configAttributes);
-
-            Collection<ConfigAttribute> configAttributes2 = new ArrayList<>();
-            ConfigAttribute configAttribute2 = new SecurityConfig("auth:coffee");
-            configAttributes2.add(configAttribute2);
-            resourceMap.put("/api/auth/coffee#GET", configAttributes2);
+            for (Authority authority : allAuthority) {
+                Collection<ConfigAttribute> configAttributes = new ArrayList<>();
+                ConfigAttribute configAttribute = new SecurityConfig(authority.getPermission());
+                configAttributes.add(configAttribute);
+                resourceMap.put(authority.getUri() + "#" + authority.getMethod(), configAttributes);
+            }
         }
 
     }

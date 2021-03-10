@@ -1,10 +1,14 @@
 package com.icoffee.system.service.impl;
 
 import com.baomidou.mybatisplus.core.toolkit.Wrappers;
+import com.icoffee.common.dto.AuthorityDto;
 import com.icoffee.common.dto.ResultDto;
 import com.icoffee.common.service.MpBaseServiceImpl;
+import com.icoffee.system.domain.Authority;
 import com.icoffee.system.domain.User;
 import com.icoffee.system.mapper.UserMapper;
+import com.icoffee.system.service.AuthorityService;
+import com.icoffee.system.service.RoleAuthorityService;
 import com.icoffee.system.service.UserService;
 import lombok.extern.log4j.Log4j2;
 import org.apache.commons.lang3.StringUtils;
@@ -12,6 +16,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -26,6 +31,10 @@ public class UserServiceImpl extends MpBaseServiceImpl<UserMapper, User> impleme
 
     @Autowired
     private PasswordEncoder passwordEncoder;
+    @Autowired
+    private RoleAuthorityService roleAuthorityService;
+    @Autowired
+    private AuthorityService authorityService;
 
 
     @Override
@@ -75,22 +84,6 @@ public class UserServiceImpl extends MpBaseServiceImpl<UserMapper, User> impleme
         }
     }
 
-
-    @Override
-    public ResultDto update(String realname, String email, String phoneNumber) throws Exception {
-        return null;
-    }
-
-    @Override
-    public ResultDto resetPwd(String oldPwd, String newPwd) throws Exception {
-        return null;
-    }
-
-    @Override
-    public ResultDto changeLocked(String id) throws Exception {
-        return null;
-    }
-
     @Override
     public List<User> getUserListByRoleId(String roleId) {
         return getBaseMapper().selectList(Wrappers.<User>lambdaQuery().eq(User::getRoleId, roleId));
@@ -110,6 +103,18 @@ public class UserServiceImpl extends MpBaseServiceImpl<UserMapper, User> impleme
         }
     }
 
+    @Override
+    public List<AuthorityDto> getUserGrantedAuthorities(String roleId) {
+        List<String> authids = roleAuthorityService.getAuthIdsByRoleId(roleId);
+        List<AuthorityDto> authorities = new ArrayList<>();
+        for (String authid : authids) {
+            Authority authority = authorityService.getById(authid);
+            AuthorityDto authorityDto = new AuthorityDto(authority.getName(), authority.getUri(), authority.getMethod(), authority.getPermission(), authority.getModule());
+            authorities.add(authorityDto);
+        }
+        return authorities;
+    }
+
 
     /**
      * 根据用户名查询用户信息是否存在
@@ -125,27 +130,5 @@ public class UserServiceImpl extends MpBaseServiceImpl<UserMapper, User> impleme
         }
         return true;
     }
-//
-//    /**
-//     * 保存用户
-//     *
-//     * @param userDO 用户实体
-//     * @param roleId 角色id
-//     * @return
-//     */
-//    @Override
-//    public ResultDTO saveUser(UserDO userDO, String roleId) {
-//        try {
-//
-//            if (existsUsername(userDO.getUsername())) {
-//                return ResultDTO.failed("账号已存在");
-//            }
-//            userDO.setPassword(new BCryptPasswordEncoder().encode(userDO.getPassword()));
-//            save(userDO);
-//            return ResultDTO.success();
-//        } catch (Exception e) {
-//            log.error("保存用户出现异常,异常信息为:{}", e.getMessage());
-//            throw e;
-//        }
-//    }
+
 }

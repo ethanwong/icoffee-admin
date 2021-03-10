@@ -1,4 +1,4 @@
-package com.icoffee.security.dto;
+package com.icoffee.common.dto;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;

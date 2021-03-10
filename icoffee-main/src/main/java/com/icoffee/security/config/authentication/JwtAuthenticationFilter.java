@@ -72,14 +72,15 @@ public class JwtAuthenticationFilter extends GenericFilterBean {
         HttpServletResponse httpServletResponse = (HttpServletResponse) response;
         String token = resolveToken(httpServletRequest);
 
+        //token类型，默认为ACCESS TOKEN
         TokenType tokenType = TokenType.ACCESS;
 
         if (StringUtils.isNotBlank(token)) {
             Payload payload = null;
-            try{
+            try {
                 payload = jwtTokenProvider.decodeTokenPayload(token);
                 tokenType = TokenType.valueOf(payload.getClaim("type").asString());
-            }catch (Exception e){
+            } catch (Exception e) {
                 log.error(e);
             }
 
@@ -88,13 +89,14 @@ public class JwtAuthenticationFilter extends GenericFilterBean {
             try {
                 decodedJWT = jwtTokenProvider.verifyToken(token, JWT_SECRET_KEY);
             } catch (TokenAuthException e) {
-                log.error(e);
+                log.info(e);
                 //捕获token校验失败异常
                 httpServletResponse.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
                 httpServletResponse.setContentType("application/json;charset:utf-8");
 
+                //token校验异常类型
                 TokenAuthCode code = e.getCode();
-                AuthErrorResponseBodyDto errorResponseBodyDto = new AuthErrorResponseBodyDto(HttpServletResponse.SC_UNAUTHORIZED, code.toString(), "Unauthorized," + e.getMessage(),tokenType);
+                AuthErrorResponseBodyDto errorResponseBodyDto = new AuthErrorResponseBodyDto(HttpServletResponse.SC_UNAUTHORIZED, code.toString(), "Unauthorized," + e.getMessage(), tokenType);
                 httpServletResponse.getWriter().write(errorResponseBodyDto.toJson());
                 return;
             }
@@ -110,20 +112,20 @@ public class JwtAuthenticationFilter extends GenericFilterBean {
         try {
             chain.doFilter(request, response);
         } catch (AccessDeniedException e) {
-            log.error(e);
+            log.info(e);
             //捕获无访问权限异常
             httpServletResponse.setStatus(HttpServletResponse.SC_FORBIDDEN);
             httpServletResponse.setContentType("application/json;charset:utf-8");
 
-            AuthErrorResponseBodyDto errorResponseBodyDto = new AuthErrorResponseBodyDto(HttpServletResponse.SC_FORBIDDEN, "Forbidden", "Forbidden," + e.getMessage(),tokenType);
+            AuthErrorResponseBodyDto errorResponseBodyDto = new AuthErrorResponseBodyDto(HttpServletResponse.SC_FORBIDDEN, "Forbidden", "Forbidden," + e.getMessage(), tokenType);
             httpServletResponse.getWriter().write(errorResponseBodyDto.toJson());
             return;
         } catch (AuthenticationCredentialsNotFoundException e) {
-            log.error(e);
+            log.info(e);
             //捕获Header头没有Authentication参数
             httpServletResponse.setStatus(HttpServletResponse.SC_FORBIDDEN);
             httpServletResponse.setContentType("application/json;charset:utf-8");
-            AuthErrorResponseBodyDto errorResponseBodyDto = new AuthErrorResponseBodyDto(HttpServletResponse.SC_FORBIDDEN, "Forbidden", "Unauthorized," + e.getMessage(),tokenType);
+            AuthErrorResponseBodyDto errorResponseBodyDto = new AuthErrorResponseBodyDto(HttpServletResponse.SC_FORBIDDEN, "Forbidden", "Unauthorized," + e.getMessage(), tokenType);
             httpServletResponse.getWriter().write(errorResponseBodyDto.toJson());
             return;
         }

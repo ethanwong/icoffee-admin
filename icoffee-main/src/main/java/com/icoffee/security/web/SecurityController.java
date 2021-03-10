@@ -1,11 +1,15 @@
 package com.icoffee.security.web;
 
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
+import com.icoffee.common.dto.AuthorityDto;
 import com.icoffee.common.dto.ResultDto;
+import com.icoffee.common.utils.RsaUtils;
 import com.icoffee.common.utils.SecurityUtils;
 import com.icoffee.security.config.authentication.JwtProvider;
-import com.icoffee.security.dto.*;
-import com.icoffee.system.domain.Authority;
+import com.icoffee.security.dto.LoginResultDto;
+import com.icoffee.security.dto.RouteDto;
+import com.icoffee.security.dto.TokenDto;
+import com.icoffee.security.dto.UserInfoDto;
 import com.icoffee.system.domain.Menu;
 import com.icoffee.system.domain.Role;
 import com.icoffee.system.domain.User;
@@ -62,10 +66,6 @@ public class SecurityController {
     private MenuService menuService;
     @Autowired
     private RoleMenuService roleMenuService;
-    @Autowired
-    private RoleAuthorityService roleAuthorityService;
-    @Autowired
-    private AuthorityService authorityService;
 
     /**
      * 过期时间间隔
@@ -80,6 +80,12 @@ public class SecurityController {
     private boolean NEEDCAPTCHA;
 
     /**
+     * 密码私钥
+     */
+    @Value("${security.rsa.private_key}")
+    private String PRIMARYKEY;
+
+    /**
      * 用户登录
      *
      * @param request
@@ -89,8 +95,12 @@ public class SecurityController {
      */
     @ApiOperation(value = "登录", notes = "提交用户名、密码、验证码进行登录")
     @PostMapping("login")
-    public ResultDto login(HttpServletRequest request, @Validated @RequestBody LoginUserDto loginUserDto, BindingResult bindingResult) {
+    public ResultDto login(HttpServletRequest request, @Validated @RequestBody LoginUserDto loginUserDto, BindingResult bindingResult) throws Exception {
+        // 密码解密
+        String password = RsaUtils.decryptByPrivateKey(PRIMARYKEY, loginUserDto.getPassword());
+        loginUserDto.setPassword(password);
 
+        log.info("user login user=" + loginUserDto);
 
         if (NEEDCAPTCHA && !CaptchaUtil.ver(loginUserDto.getCode(), request)) {
             CaptchaUtil.clear(request);
@@ -123,7 +133,7 @@ public class SecurityController {
 
     @ApiOperation(value = "刷新token重新登录", notes = "")
     @PostMapping("/refreshToken")
-    public ResultDto refreshToken(HttpServletRequest request){
+    public ResultDto refreshToken(HttpServletRequest request) {
 
         //获取用户名称
         String username = SecurityUtils.getCurrentUsername();
@@ -201,7 +211,11 @@ public class SecurityController {
         return CaptchaUtil.ver(captcha, request);
     }
 
-
+    /**
+     * 获取用户信息
+     *
+     * @return
+     */
     @ApiOperation(value = "获取用户信息", notes = "")
     @GetMapping("/user")
     public ResultDto getUserInfo() {
@@ -222,7 +236,7 @@ public class SecurityController {
         //获取路由信息
         userInfoDto.setRoutes(getUserRoutes(role));
         //获取权限信息
-        userInfoDto.setPermissions(getPermissions(role));
+        userInfoDto.setPermissions(getPermissions(user));
 
         return ResultDto.returnSuccessData(userInfoDto);
     }
@@ -230,18 +244,11 @@ public class SecurityController {
     /**
      * 获取授权信息
      *
-     * @param role
+     * @param user
      * @return
      */
-    private List<AuthorityDto> getPermissions(Role role) {
-        List<AuthorityDto> result = new ArrayList<>();
-        List<String> authids = roleAuthorityService.getAuthIdsByRoleId(role.getId());
-        for (String authid : authids) {
-            Authority authority = authorityService.getById(authid);
-            AuthorityDto AuthorityDto = new AuthorityDto(authority.getName(), authority.getUri(), authority.getMethod(), authority.getPermission(), authority.getModule());
-            result.add(AuthorityDto);
-        }
-        return result;
+    private List<AuthorityDto> getPermissions(User user) {
+        return userService.getUserGrantedAuthorities(user.getRoleId());
     }
 
     /**
@@ -287,28 +294,28 @@ public class SecurityController {
             routes.add(rootRouteDto);
 
             //判断跟级路径是否路由重定向,根据vue路由格式要求，对带重定向参数的跟级别目录进行处理
-            if(rootMenu.isRedirect()){
+            if (rootMenu.isRedirect()) {
                 //重定向的目标路径和组件的相对路径
                 String redirect = rootMenu.getRoutePath();
-                if(redirect.startsWith("/")){
+                if (redirect.startsWith("/")) {
                     redirect = redirect.substring(1);
                 }
                 boolean isInclude = false;
-                for(RouteDto child:rootRouteDto.getChildren()){
-                    if(child.getPath().equals(redirect)){
+                for (RouteDto child : rootRouteDto.getChildren()) {
+                    if (child.getPath().equals(redirect)) {
                         isInclude = true;
                         break;
                     }
                 }
 
-                if(!isInclude){
+                if (!isInclude) {
                     //不包含name参数
                     rootRouteDto.setName(null);
                     //不包含meta参数
                     rootRouteDto.setMeta(null);
                     //path路径为空
                     rootRouteDto.setPath("");
-                    rootRouteDto.getChildren().add(new RouteDto(rootMenu.getModuleName(),redirect,redirect,meta,null, rootMenu.getHidden()));
+                    rootRouteDto.getChildren().add(new RouteDto(rootMenu.getModuleName(), redirect, redirect, meta, null, rootMenu.getHidden()));
                 }
             }
         }
