@@ -8,7 +8,7 @@ import java.util.List;
 /**
  * @Name MyLogicSqlInjector
  * @Description 自定义sql注入器
- * @Author chenly
+ * @Author huangyingfeng
  * @Create 2019-12-10 15:29
  */
 public class CustomSqlInjector extends DefaultSqlInjector {

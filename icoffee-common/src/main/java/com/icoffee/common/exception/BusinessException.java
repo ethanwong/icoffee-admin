@@ -3,7 +3,7 @@ package com.icoffee.common.exception;
 /**
  * @Name BusinessException
  * @Description 业务异常类
- * @Author cly
+ * @Author huangyingfeng
  * @Create 2018-12-12 09:08
  */
 public class BusinessException extends RuntimeException{

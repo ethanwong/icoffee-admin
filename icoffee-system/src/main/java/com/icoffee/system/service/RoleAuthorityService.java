@@ -9,7 +9,7 @@ import java.util.List;
 /**
  * @Name RoleAuthorityService
  * @Description ${DESCRIPTION}
- * @Author lincy
+ * @Author huangyingfeng
  * @Create 2020-02-27 15:30
  */
 public interface RoleAuthorityService extends MpBaseService<RoleAuthority> {

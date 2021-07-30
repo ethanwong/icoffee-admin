@@ -13,7 +13,7 @@ import java.util.List;
 /**
  * @Name MenuService
  * @Description 菜单事务接口
- * @Author lincy
+ * @Author huangyingfeng
  * @Create 2020-02-21 15:50
  */
 public interface MenuService extends MpBaseService<Menu> {

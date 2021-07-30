@@ -7,7 +7,7 @@ import com.icoffee.system.domain.RoleMenu;
 /**
  * @Name RoleMenuMapper
  * @Description ${DESCRIPTION}
- * @Author lincy
+ * @Author huangyingfeng
  * @Create 2020-02-25 9:04
  */
 public interface RoleMenuMapper extends MpBaseMapper<RoleMenu> {

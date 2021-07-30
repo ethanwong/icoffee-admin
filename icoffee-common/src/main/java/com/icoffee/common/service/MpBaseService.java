@@ -17,7 +17,7 @@ import java.util.Map;
  * @param <T> entity泛型
  * @Name MpBaseService
  * @Description Service接口类基类
- * @Author lincy
+ * @Author huangyingfeng
  * @Create 2019-12-10 11:28
  */
 public interface MpBaseService<T extends BaseDomain> extends IService<T> {

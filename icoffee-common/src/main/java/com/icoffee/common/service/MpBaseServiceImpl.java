@@ -24,7 +24,7 @@ import java.util.stream.Collectors;
 /**
  * @Name MpBaseServiceImpl
  * @Description Service接口实现类基类
- * @Author chenly
+ * @Author huangyingfeng
  * @Create 2019-12-10 11:29
  */
 @Log4j2

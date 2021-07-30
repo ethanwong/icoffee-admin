@@ -10,7 +10,7 @@ import java.util.List;
 /**
  * @Name AuthorityService
  * @Description 权限事务接口
- * @Author lincy
+ * @Author huangyingfeng
  * @Create 2020-02-27 9:11
  */
 public interface AuthorityService extends MpBaseService<Authority> {

@@ -9,7 +9,7 @@ import com.icoffee.system.dto.RoleMenuAuthDto;
 /**
  * @Name RoleService
  * @Description 角色事务接口
- * @Author lincy
+ * @Author huangyingfeng
  * @Create 2020-02-21 15:32
  */
 public interface RoleService extends MpBaseService<Role> {

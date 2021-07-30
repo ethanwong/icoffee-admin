@@ -8,7 +8,7 @@ import java.util.List;
 /**
  * @Name MenuDto
  * @Description 菜单列表
- * @Author lincy
+ * @Author huangyingfeng
  * @Create 2018-12-17 10:05
  */
 @Data

@@ -8,7 +8,7 @@ import org.apache.ibatis.mapping.SqlSource;
 /**
  * @Name DeleteAll
  * @Description 自定义deleteAll方法
- * @Author chenly
+ * @Author huangyingfeng
  * @Create 2019-12-10 15:36
  */
 public class DeleteAll extends AbstractMethod {

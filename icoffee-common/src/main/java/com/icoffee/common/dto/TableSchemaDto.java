@@ -5,7 +5,7 @@ import lombok.Data;
 /**
  * @Name TableSchemaDto
  * @Description 表字段描述信息DTO
- * @Author chenly
+ * @Author huangyingfeng
  * @Create 2020-05-21 16:09
  */
 @Data

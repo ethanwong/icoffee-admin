@@ -10,7 +10,7 @@ import java.util.Map;
 /**
  * @Name SearchFilter
  * @Description 条件查询封装类
- * @Author lincy
+ * @Author huangyingfeng
  * @Create 2020-02-20 10:16
  */
 public class SearchFilter {

@@ -9,7 +9,7 @@ import org.springframework.stereotype.Component;
 /**
  * @Name SpringBeanUtils
  * @Description Spring Bean工具类
- * @Author chenly
+ * @Author huangyingfeng
  * @Create 2020-08-17 10:04
  */
 @Log4j2

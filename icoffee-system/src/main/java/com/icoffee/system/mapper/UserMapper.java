@@ -7,7 +7,7 @@ import com.icoffee.system.domain.User;
 /**
  * @Name UserMapper
  * @Description 用户Mapper
- * @Author chenly
+ * @Author huangyingfeng
  * @Create 2019-12-11 16:49
  */
 public interface UserMapper extends MpBaseMapper<User> {

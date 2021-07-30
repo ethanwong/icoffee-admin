@@ -10,7 +10,7 @@ import java.util.List;
 /**
  * @Name MpBaseMapper
  * @Description Repository接口类基类
- * @Author chenly
+ * @Author huangyingfeng
  * @Create 2019-12-10 15:40
  */
 public interface MpBaseMapper<T extends BaseDomain> extends BaseMapper<T> {

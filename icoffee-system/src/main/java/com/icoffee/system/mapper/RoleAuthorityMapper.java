@@ -7,7 +7,7 @@ import com.icoffee.system.domain.RoleAuthority;
 /**
  * @Name RoleAuthorityMapper
  * @Description ${DESCRIPTION}
- * @Author lincy
+ * @Author huangyingfeng
  * @Create 2020-02-27 15:30
  */
 public interface RoleAuthorityMapper extends MpBaseMapper<RoleAuthority> {

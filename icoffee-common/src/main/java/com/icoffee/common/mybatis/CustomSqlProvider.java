@@ -5,7 +5,7 @@ import java.util.Map;
 /**
  * @Name CustomSqlProvider
  * @Description 自定义SQL适配器
- * @Author chenly
+ * @Author huangyingfeng
  * @Create 2020-05-21 17:34
  */
 public class CustomSqlProvider {

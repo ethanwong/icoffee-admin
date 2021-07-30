@@ -15,7 +15,7 @@ import java.util.List;
 /**
  * @Name AuthorityServiceImpl
  * @Description ${DESCRIPTION}
- * @Author lincy
+ * @Author huangyingfeng
  * @Create 2020-02-27 9:13
  */
 @Service

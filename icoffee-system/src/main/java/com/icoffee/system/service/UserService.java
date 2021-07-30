@@ -11,7 +11,7 @@ import java.util.List;
 /**
  * @Name UserService
  * @Description 用户模块Service接口
- * @Author chenly
+ * @Author huangyingfeng
  * @Create 2019-11-29 17:16
  */
 public interface UserService extends MpBaseService<User> {

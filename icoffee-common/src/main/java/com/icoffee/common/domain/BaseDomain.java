@@ -10,7 +10,7 @@ import java.util.UUID;
 /**
  * @Name BaseDomain
  * @Description 实体类基类
- * @Author chenly
+ * @Author huangyingfeng
  * @Create 2019-11-29 16:39
  */
 @MappedSuperclass

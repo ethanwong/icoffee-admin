@@ -8,7 +8,7 @@ import org.apache.ibatis.mapping.SqlSource;
 /**
  * @Name SelectAll
  * @Description 自定义selectAll方法
- * @Author chenly
+ * @Author huangyingfeng
  * @Create 2019-12-11 13:56
  */
 public class SelectAll extends AbstractMethod {
