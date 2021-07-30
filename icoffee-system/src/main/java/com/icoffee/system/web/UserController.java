@@ -6,6 +6,7 @@ import com.icoffee.common.annotation.AuthorizePoint;
 import com.icoffee.common.dto.PageDto;
 import com.icoffee.common.dto.ResultDto;
 import com.icoffee.common.utils.SearchFilter;
+import com.icoffee.common.utils.SecurityUtils;
 import com.icoffee.system.domain.Role;
 import com.icoffee.system.domain.User;
 import com.icoffee.system.service.RoleService;
@@ -16,6 +17,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpServletRequest;
+import java.util.Arrays;
 
 /**
  * @Name UserController
@@ -53,6 +55,12 @@ public class UserController {
     public ResultDto delete(HttpServletRequest request, @PathVariable String ids) throws Exception {
         ResultDto resultDto = new ResultDto();
         String[] userIds = ids.split(",");
+
+        User user = userService.getByUsername( SecurityUtils.getCurrentUsername());
+        if(Arrays.asList(userIds).contains(user.getId())){
+            return ResultDto.returnFail("不能删除当前登录的用户信息");
+        }
+
         for(String userId:userIds){
             resultDto = userService.deleteById(userId);
             if (!resultDto.success) {
@@ -89,6 +97,7 @@ public class UserController {
     public ResultDto page(HttpServletRequest request, @RequestParam("pageNo") int pageNo, @RequestParam("pageSize") int pageSize) {
         QueryWrapper<User> queryWrapper = SearchFilter.buildByHttpRequestList(request);
         queryWrapper.orderByDesc("create_at");
+        queryWrapper.ne("username","root");
         PageDto<User> pageDto = userService.selectPage(queryWrapper, pageNo, pageSize);
 
         for(User user:pageDto.getItems()){

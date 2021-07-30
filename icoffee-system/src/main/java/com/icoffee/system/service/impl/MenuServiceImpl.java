@@ -6,12 +6,15 @@ import com.baomidou.mybatisplus.core.toolkit.Wrappers;
 import com.icoffee.common.dto.PageDto;
 import com.icoffee.common.dto.ResultDto;
 import com.icoffee.common.service.MpBaseServiceImpl;
+import com.icoffee.common.utils.SecurityUtils;
 import com.icoffee.system.domain.Menu;
+import com.icoffee.system.domain.Role;
 import com.icoffee.system.domain.RoleMenu;
 import com.icoffee.system.dto.ElTreeDto;
 import com.icoffee.system.mapper.MenuMapper;
 import com.icoffee.system.service.MenuService;
 import com.icoffee.system.service.RoleMenuService;
+import com.icoffee.system.service.RoleService;
 import lombok.extern.log4j.Log4j2;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -34,6 +37,8 @@ public class MenuServiceImpl extends MpBaseServiceImpl<MenuMapper, Menu> impleme
     private RoleMenuService roleMenuService;
     @Autowired
     private MenuService menuService;
+    @Autowired
+    private RoleService roleService;
 
     /**
      * 设置子菜单
@@ -91,6 +96,12 @@ public class MenuServiceImpl extends MpBaseServiceImpl<MenuMapper, Menu> impleme
 
     @Override
     public ResultDto getTree(String parentId) {
+        //读取当前用户所拥有的菜单权限
+        String username = SecurityUtils.getCurrentUsername();
+        Role role = roleService.getRoleByUsername(username);
+        //获取当前用户所属角色所关联的菜单
+        List<String> checkMenuIds = roleMenuService.getMenuIdsByRoleId(role.getId());
+
         List<ElTreeDto> elTreeDtoList = new ArrayList<>();
         QueryWrapper<Menu> queryWrapper = new QueryWrapper<>();
 
@@ -100,6 +111,9 @@ public class MenuServiceImpl extends MpBaseServiceImpl<MenuMapper, Menu> impleme
 
         List<Menu> rootMenuList = getMenuByParentId(queryWrapper);
         for (Menu menu : rootMenuList) {
+            if (!checkMenuIds.contains(menu.getId())) {
+                continue;
+            }
             ElTreeDto elTreeDto = new ElTreeDto();
             this.menuToElTree(menu, elTreeDto);
             elTreeDtoList.add(elTreeDto);

@@ -80,7 +80,7 @@ public class RoleServiceImpl extends MpBaseServiceImpl<RoleMapper, Role> impleme
             for (User user : userList) {
                 nameList.add(user.getUsername());
             }
-            ResultDto.returnFail("删除错误，角色被如下用户关联：" + nameList.toString());
+            return ResultDto.returnFail("删除错误，角色被如下用户关联：" + nameList.toString());
         }
         this.removeById(id);
         return ResultDto.returnSuccess();
@@ -191,6 +191,12 @@ public class RoleServiceImpl extends MpBaseServiceImpl<RoleMapper, Role> impleme
     @Override
     public Role getRoleById(String id) {
         return getById(id);
+    }
+
+    @Override
+    public Role getRoleByUsername(String username) {
+        User user = userService.getByUsername(username);
+        return this.getRoleById(user.getRoleId());
     }
 
     private void setChildAuthId(List<String> authIdTemp, Menu menu) {

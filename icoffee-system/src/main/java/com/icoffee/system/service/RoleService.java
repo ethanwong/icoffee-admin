@@ -51,4 +51,11 @@ public interface RoleService extends MpBaseService<Role> {
      * @return
      */
     Role getRoleById(String id);
+
+
+    /**
+     * 根据用户名获取角色信息
+     * @return
+     */
+    Role getRoleByUsername(String username);
 }

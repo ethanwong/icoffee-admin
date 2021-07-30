@@ -4,9 +4,12 @@ import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.icoffee.common.annotation.AuthorizePoint;
 import com.icoffee.common.dto.ResultDto;
 import com.icoffee.common.utils.SearchFilter;
+import com.icoffee.common.utils.SecurityUtils;
 import com.icoffee.system.domain.Role;
+import com.icoffee.system.domain.User;
 import com.icoffee.system.dto.RoleMenuAuthDto;
 import com.icoffee.system.service.RoleService;
+import com.icoffee.system.service.UserService;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -14,6 +17,7 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpServletRequest;
+import java.util.Arrays;
 import java.util.List;
 
 /**
@@ -29,6 +33,8 @@ public class RoleController {
 
     @Autowired
     private RoleService roleService;
+    @Autowired
+    private UserService userService;
 
     @AuthorizePoint(name = "获取角色分页列表", module = "role")
     @ApiOperation(value = "获取分页列表", notes = "获取分页列表")
@@ -36,6 +42,7 @@ public class RoleController {
     public ResultDto page(HttpServletRequest request, @RequestParam("pageNo") int pageNo, @RequestParam("pageSize") int pageSize) {
         QueryWrapper<Role> queryWrapper = SearchFilter.buildByHttpRequestList(request);
         queryWrapper.orderByDesc("create_at");
+        queryWrapper.ne("name","超级管理员");
         return ResultDto.returnSuccessData(roleService.selectPage(queryWrapper, pageNo, pageSize));
     }
 
@@ -66,6 +73,12 @@ public class RoleController {
     public ResultDto delete(HttpServletRequest request, @PathVariable String roleId) {
 
         String[] roleIds = roleId.split(",");
+
+        String currentUsername = SecurityUtils.getCurrentUsername();
+        User user = userService.getByUsername(currentUsername);
+        if(Arrays.asList(roleIds).contains(user.getRoleId())){
+            return ResultDto.returnFail("不能删除当前账号关联的角色");
+        }
         ResultDto resultDto = new ResultDto();
         for (String id : roleIds) {
             resultDto = roleService.deleteRoleById(id);
