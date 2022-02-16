@@ -33,8 +33,6 @@ iCoffeeAdmin基于Spring Boot 2.4.2、Spring Security、Jwt、MyBatis Plus 3.4.2
 - icoffee-business:业务功能模块，新功能在此添加开发，也可以自行创建其他子模块；
 
 ## 部署打包
-> cd icoffee-main
-> 
 > mvn clean package
 
 ## 启动工程
