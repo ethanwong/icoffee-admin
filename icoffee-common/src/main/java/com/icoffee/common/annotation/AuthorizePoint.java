@@ -25,6 +25,6 @@ public @interface AuthorizePoint {
      *
      * @return
      */
-    String module();
+    String[] module() default {};
 
 }

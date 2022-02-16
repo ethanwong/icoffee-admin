@@ -53,22 +53,23 @@ public class BootstrapRunner implements ApplicationRunner {
                 //授权名称
                 String name = authorizePoint.name();
                 //模块名称
-                String module = authorizePoint.module();
-                //授权标签
-                String permission = module + ":" + handlerMethod.getMethod().getName();
+                String[] modules = authorizePoint.module();
+                for (String module : modules) {
+                    //授权标签
+                    String permission = module + ":" + handlerMethod.getMethod().getName();
 
+                    Iterator<String> ite = uris.iterator();
+                    while (ite.hasNext()) {
+                        //请求URI
+                        String uri = ite.next();
 
-                Iterator<String> ite = uris.iterator();
-                while (ite.hasNext()) {
-                    //请求URI
-                    String uri = ite.next();
+                        uri = hanleUri(uri);
 
-                    uri = hanleUri(uri);
-
-                    for (Object method : uriMethods) {
-                        Authority authority = new Authority(name, uri, method.toString(), permission, description, module);
-                        log.info("init authority={}", authority);
-                        authorityList.add(authority);
+                        for (Object method : uriMethods) {
+                            Authority authority = new Authority(name, uri, method.toString(), permission, description, module);
+                            log.info("init authority={}", authority);
+                            authorityList.add(authority);
+                        }
                     }
                 }
             }

@@ -34,6 +34,7 @@ public class AuthorityServiceImpl extends MpBaseServiceImpl<AuthorityMapper, Aut
                     authority.setUpdateAt(System.currentTimeMillis());
                     this.saveOrUpdate(authority);
                 } else {
+                    authority.setCreateAt(System.currentTimeMillis());
                     batchSaveList.add(authority);
                 }
             }

@@ -42,7 +42,7 @@ public class RoleController {
     public ResultDto page(HttpServletRequest request, @RequestParam("pageNo") int pageNo, @RequestParam("pageSize") int pageSize) {
         QueryWrapper<Role> queryWrapper = SearchFilter.buildByHttpRequestList(request);
         queryWrapper.orderByDesc("create_at");
-        queryWrapper.ne("name","超级管理员");
+        queryWrapper.ne("name", "超级管理员");
         return ResultDto.returnSuccessData(roleService.selectPage(queryWrapper, pageNo, pageSize));
     }
 
@@ -76,7 +76,7 @@ public class RoleController {
 
         String currentUsername = SecurityUtils.getCurrentUsername();
         User user = userService.getByUsername(currentUsername);
-        if(Arrays.asList(roleIds).contains(user.getRoleId())){
+        if (Arrays.asList(roleIds).contains(user.getRoleId())) {
             return ResultDto.returnFail("不能删除当前账号关联的角色");
         }
         ResultDto resultDto = new ResultDto();
@@ -101,11 +101,11 @@ public class RoleController {
     @AuthorizePoint(name = "设置角色授权信息", module = "role")
     @ApiOperation(value = "设置角色授权信息", notes = "设置角色授权信息")
     @PutMapping(value = "/setRoleAuth")
-    public ResultDto setRoleAuth(@RequestBody RoleMenuAuthDto roleMenuAuthDto)  {
+    public ResultDto setRoleAuth(@RequestBody RoleMenuAuthDto roleMenuAuthDto) {
         return roleService.setRoleAuth(roleMenuAuthDto);
     }
 
-    @AuthorizePoint(name = "获取角色列表", module = "role")
+    @AuthorizePoint(name = "获取角色列表", module = {"role", "user"})
     @ApiOperation(value = "获取角色列表", notes = "获取角色列表")
     @GetMapping(value = "/getList")
     public ResultDto getList(HttpServletRequest request) {
