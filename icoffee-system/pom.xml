@@ -2,16 +2,19 @@
          xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://maven.apache.org/POM/4.0.0">
     <modelVersion>4.0.0</modelVersion>
     <parent>
-        <groupId>com.icoffee</groupId>
         <artifactId>icoffee-admin</artifactId>
-        <version>0.0.1-SNAPSHOT</version>
+        <groupId>com.icoffee</groupId>
+        <version>1.0.0</version>
     </parent>
 
     <artifactId>icoffee-system</artifactId>
     <name>icoffee-system</name>
+    <version>1.0.0</version>
 
     <properties>
-
+        <maven.compiler.source>8</maven.compiler.source>
+        <maven.compiler.target>8</maven.compiler.target>
+        <java.version>1.8</java.version>
     </properties>
 
     <dependencies>
@@ -23,24 +26,8 @@
         <dependency>
             <groupId>com.icoffee</groupId>
             <artifactId>icoffee-common</artifactId>
-            <version>0.0.1-SNAPSHOT</version>
+            <version>1.0.0</version>
         </dependency>
     </dependencies>
 
-    <build>
-        <plugins>
-            <plugin>
-                <groupId>org.springframework.boot</groupId>
-                <artifactId>spring-boot-maven-plugin</artifactId>
-            </plugin>
-            <!-- 跳过单元测试 -->
-            <plugin>
-                <groupId>org.apache.maven.plugins</groupId>
-                <artifactId>maven-surefire-plugin</artifactId>
-                <configuration>
-                    <skipTests>true</skipTests>
-                </configuration>
-            </plugin>
-        </plugins>
-    </build>
 </project>

@@ -47,9 +47,8 @@ public class SecurityAccessDecisionManager implements AccessDecisionManager {
                     return;
                 }
             }
-
-            throw new AccessDeniedException("no access,need permission " + needPermission);
         }
+        throw new AccessDeniedException("no access,need permission " + configAttributes);
     }
 
     @Override

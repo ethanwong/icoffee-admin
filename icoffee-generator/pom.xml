@@ -5,7 +5,7 @@
     <parent>
         <artifactId>icoffee-admin</artifactId>
         <groupId>com.icoffee</groupId>
-        <version>0.0.1-SNAPSHOT</version>
+        <version>1.0.0</version>
     </parent>
     <modelVersion>4.0.0</modelVersion>
 
@@ -15,7 +15,7 @@
         <dependency>
             <groupId>com.icoffee</groupId>
             <artifactId>icoffee-common</artifactId>
-            <version>0.0.1-SNAPSHOT</version>
+            <version>1.0.0</version>
         </dependency>
     </dependencies>
 

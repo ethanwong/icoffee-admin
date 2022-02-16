@@ -1,5 +1,5 @@
 server:
-  port: 8080
+  port: 8787
 jwt:
   token:
     secretKey: 088c49f786894126870318483b4fff7d
